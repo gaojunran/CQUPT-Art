@@ -4,7 +4,7 @@ import Main from '../views/Main.vue'
 import AnnouncementContent from "../views/AnnouncementContent.vue";
 
 const routes = [
-    { path: '/fileShowContent\.php\?id\=:id', component: AnnouncementContent},
+    { path: '/fileShowContent.php', component: AnnouncementContent},
     { path: '/', component: Main }
 ]
 
