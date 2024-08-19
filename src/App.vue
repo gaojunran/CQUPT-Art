@@ -12,15 +12,16 @@ const refresh = () => {
 <template>
   <div class="relative text-right">
 
-    <Button class="absolute top-0 right-0"
-            raised label="Danger" severity="danger"
+    <Button class="fixed top-0 right-0 m-4"
+            raised label="Danger" severity="danger" outlined
             v-tooltip="'仅临时关闭, 10分钟内有效\n彻底关闭请直接禁用此插件'"
             @click="refresh()"
+            pt:root:class="opacity-20 hover:opacity-100 transition"
     >返回原版</Button>
 
   </div>
 
-  <div class="w-1/3 mx-auto">
+  <div class=" mx-auto">
     <RouterView></RouterView>
   </div>
     <div>{{ $route.fullPath }}</div>

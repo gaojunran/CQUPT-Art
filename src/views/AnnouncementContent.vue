@@ -4,47 +4,31 @@ let title, content;
 title = $('#mainPanel > h3:nth-child(1)').text();
 console.log(title)
 
-const extractAllText = (node) => {
-  let paragraphs = [];
-  let currentParagraph = '';
-
-  // 如果当前节点是文本节点,添加到当前段落
-  if (node.nodeType === Node.TEXT_NODE) {
-    currentParagraph += $(node).text().trim();
-  }
-  // 如果当前节点是 <p> 标签,保存当前段落并开始新的段落
-  else if (node.nodeName.toLowerCase() === 'p') {
-    if (currentParagraph.trim() !== '') {
-      paragraphs.push(currentParagraph.trim());
-      currentParagraph = '';
-    }
-  }
-
-  // 遍历当前节点的所有子节点
-  $(node).contents().each(function() {
-    paragraphs = paragraphs.concat(extractAllText(this));
+function getPTagTexts(node) {
+  let pTagTexts = [];
+  $(node).find('p').each(function() {
+    const text = $(this).text().trim()
+    text !== title && pTagTexts.push(text);
   });
 
-  // 保存最后一个段落
-  if (currentParagraph.trim() !== '') {
-    paragraphs.push(currentParagraph.trim());
-  }
-
-  return paragraphs;
+  return pTagTexts;
 }
 
 // 示例使用
 let rootNode = $('html body div div#mainPanel div')[0];
-let allText = extractAllText(rootNode);
+let allText = getPTagTexts(rootNode);
 console.log(allText);
 
 </script>
 
+
 <template>
-<!--  <Button>hello</Button>-->
-  <div class="text-2xl font-bold">{{ title }}</div>
-  <Panel>
-    {{allText}}
+  <Panel class="w-full sm:w-2/3 mx-auto">
+    <div class="text-lg sm:text-2xl font-bold mb-4">{{ title }}</div>
+    <div v-for="paragraph in allText" :key="paragraph" class="text-left text-sm sm:text-lg mb-4">
+      {{ paragraph }}
+    </div>
+
   </Panel>
 </template>
 

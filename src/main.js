@@ -10,7 +10,13 @@ import {router} from "./utils/router.js";
 import Cookies from "universal-cookie";
 import Tooltip from 'primevue/tooltip';
 
+// 为TailwindCSS的响应式设计
+const viewport = document.createElement('meta');
+viewport.name = 'viewport';
+viewport.content = 'width=device-width, initial-scale=1.0';
 
+// 将meta元素添加到head中
+document.getElementsByTagName('head')[0].appendChild(viewport);
 
 
 if (!new Cookies().get("notToStyle")) {

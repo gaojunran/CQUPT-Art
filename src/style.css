@@ -58,8 +58,8 @@ body {
 
 #app {
   /*max-width: 1280px;*/
-  width: calc(100% - 4rem);
-  height: calc(100vh - 4rem);
+  width: 100%;
+  /*height: calc(100% - 4rem);*/
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
