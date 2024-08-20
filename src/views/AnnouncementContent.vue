@@ -16,8 +16,8 @@ function getPTagTexts(node) {
 
 // 示例使用
 let rootNode = $('html body div div#mainPanel div')[0];
-let allText = getPTagTexts(rootNode);
-console.log(allText);
+content = getPTagTexts(rootNode);
+// console.log(allText);
 
 </script>
 
@@ -25,7 +25,7 @@ console.log(allText);
 <template>
   <Panel class="w-full sm:w-2/3 mx-auto">
     <div class="text-lg sm:text-2xl font-bold mb-4">{{ title }}</div>
-    <div v-for="paragraph in allText" :key="paragraph" class="text-left text-sm sm:text-lg mb-4">
+    <div v-for="paragraph in content" :key="paragraph" class="text-left text-sm sm:text-lg mb-4">
       {{ paragraph }}
     </div>
 

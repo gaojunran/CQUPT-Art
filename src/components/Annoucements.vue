@@ -10,7 +10,7 @@ const props = defineProps({
 
 const jump = (url) => {
   // alert("当前暂未开发【公告详情】页面的美化，已为您跳转至原网页。")
-  window.open(url);
+  window.location.href = url;
 };
 
 onMounted(() => {
