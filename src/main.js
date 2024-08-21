@@ -15,6 +15,7 @@ import Tab from 'primevue/tab';
 import TabPanels from 'primevue/tabpanels';
 import TabPanel from 'primevue/tabpanel';
 import Select from 'primevue/select';
+import SelectButton from "primevue/selectbutton";
 import {router} from "./utils/router.js";
 import Cookies from "universal-cookie";
 import Tooltip from 'primevue/tooltip';
@@ -55,6 +56,7 @@ if (!new Cookies().get("notToStyle" || true)) {
     app.component('TabPanels', TabPanels);
     app.component('TabPanel', TabPanel);
     app.component('Select', Select);
+    app.component('SelectButton', SelectButton);
     app.directive('tooltip', Tooltip);
     app.mount(
         (() => {

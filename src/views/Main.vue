@@ -63,7 +63,7 @@ onMounted(() => {
   <Panel header="快捷服务" class="w-2/3 sm:w-1/2 mx-auto" v-if="isLogin">
     <ButtonGroup class="hidden sm:block">
       <Button class="font-bold" outlined>课 程 表</Button>
-      <Button class="font-bold" outlined>成绩查询</Button>
+      <Button class="font-bold" outlined @click="jumpTo('/student/chengjiPm.php')">成绩查询</Button>
       <Button class="font-bold" outlined @click="jumpTo('/student/ksap.php')">考试信息</Button>
       <Button class="font-bold" outlined>选课中心</Button>
       <Button class="font-bold" outlined>学 评 教</Button>

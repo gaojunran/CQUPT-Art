@@ -15,12 +15,11 @@ const jumpTo = (url) => {
 </script>
 
 <template>
-  <div class="relative text-right">
-    <Button class="fixed top-0 right-0 m-4 sm:m-8 font-bold"
-            raised severity="danger" outlined rounded
+  <div class="relative">
+    <Button raised severity="danger" outlined rounded
             v-tooltip="'临时禁用插件, \n10分钟内有效'"
             @click="refresh()"
-            pt:root:class="opacity-20 hover:opacity-100 transition">
+            pt:root:class="opacity-20 hover:opacity-100 transition fixed top-0 right-0 m-4 sm:m-8 font-bold">
       <template #icon>
         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24">
           <path fill="currentColor" fill-rule="evenodd"
@@ -28,10 +27,7 @@ const jumpTo = (url) => {
         </svg>
       </template>
     </Button>
-  </div>
-  <div class="relative text-left">
-    <Button rounded class="fixed top-0 left-0 m-4 sm:m-8 font-bold"
-            pt:root:class="opacity-20 hover:opacity-100 transition"
+    <Button rounded pt:root:class="opacity-20 hover:opacity-100 transition fixed top-0 left-0 m-4 sm:m-8 font-bold"
             v-tooltip="'回到主页'"
             @click="jumpTo('/')"
             outlined>
@@ -42,6 +38,7 @@ const jumpTo = (url) => {
       </template>
     </Button>
   </div>
+
 
 
   <div class="mx-auto">
