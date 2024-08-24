@@ -1,7 +1,7 @@
 {
-  "name": "monkey-vue",
+  "name": "CQUPT-Art",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.9.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -18,14 +18,13 @@
     "primeicons": "^7.0.0",
     "primevue": "^4.0.4",
     "tailwindcss": "^3.4.10",
-    "universal-cookie": "^7",
-    "vue": "^3.4.27",
-    "vue-router": "4"
+    "universal-cookie": "^7.2.0",
+    "vue": "^3.4.38",
+    "vue-router": "^4.4.3"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^5.0.4",
-    "sass-embedded": "^1.77.8",
-    "vite": "^5.2.12",
-    "vite-plugin-monkey": "^4.0.0"
+    "@vitejs/plugin-vue": "^5.1.2",
+    "vite": "^5.4.2",
+    "vite-plugin-monkey": "^4.0.6"
   }
 }

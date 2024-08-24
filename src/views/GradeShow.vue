@@ -59,15 +59,20 @@ const myChoice = ref({name: "全部学期", code: "all"});
 const semesterValue = computed(() => myChoice.value.code);
 const tabValue = ref("绩点");
 
+const jumpTo = (url) => {
+  window.location.href = url;
+}
+
 </script>
 
 <template>
 
   <Panel class="sm:w-3/4 w-full mx-auto p-1 sm:p-4">
-    <div class="flex justify-between">
-      <SelectButton class=""
-                    v-model="tabValue" :options="['绩点', '成绩', '学分']"></SelectButton>
-      <Select class="w-28 sm:w-48 text-lg"
+    <div class="sm:flex block justify-between">
+      <SelectButton class="w-3/4 sm:w-auto "
+                    v-model="tabValue" :options="['绩点', '成绩', '学分']"
+      ></SelectButton>
+      <Select class="w-3/4 sm:w-48 text-sm sm:text-lg mt-4 sm:mt-0"
               :options="choices" optionLabel="name"
               v-model="myChoice"
       ></Select>
@@ -75,65 +80,44 @@ const tabValue = ref("绩点");
 
     <div class="block sm:flex mt-8">
       <div class="w-full sm:w-1/3 flex flex-col gap-4">
-        <Card class="flex-none text-[#34d399]" pt:root="bg-white bg-opacity-5" v-if="tabValue === '绩点'">
-          <template #title>
-            <div class="text-left text-[#34d399] text-opacity-80">平均学分绩点</div>
-          </template>
-          <template #content>
-            <div class="text-left">
-                <span class="text-2xl font-bold shadow-2xl">
-                  {{ rankAndGrade?.find(item => item.semester === semesterValue)?.gpa || "暂无数据" }}
-                </span>
-              <span class="text-sm font-bold"> / 4.0</span>
-            </div>
-          </template>
-        </Card>
-        <Card class="flex-none text-[#34d399]" pt:root="bg-white bg-opacity-5" v-if="tabValue === '绩点'">
-          <template #title>
-            <div class="text-left text-[#34d399] text-opacity-80">专业排名</div>
-          </template>
-          <template #content>
-            <div class="text-left">
-                <span class="text-2xl font-bold shadow-2xl">
-                  {{ rankAndGrade?.find(item => item.semester === semesterValue)?.gpaRank || "暂无数据" }}
-                </span>
-              <span class="text-sm font-bold"></span>
-            </div>
-          </template>
-        </Card>
+
+        <ShowCard
+            v-if="tabValue === '绩点'"
+            title="平均学分绩点"
+            :main-content="rankAndGrade?.find(item => item.semester === semesterValue)?.gpa || '暂无数据'"
+            sub-content=" / 4.0"
+            color="green"
+        ></ShowCard>
+
+        <ShowCard
+            v-if="tabValue === '绩点'"
+            title="专业排名"
+            :main-content="rankAndGrade?.find(item => item.semester === semesterValue)?.gpaRank || '暂无数据'"
+            color="green"
+        ></ShowCard>
+
         <ShowCard v-if="tabValue === '绩点'"
-                  class="text-green" :title="'满绩门数'"
+                  title="满绩门数"
                   :main-content="detailedGrade?.filter(item => (item.semester === semesterValue || semesterValue === 'all') && Number(item.gradePoint) === 4.0).length"
                   :sub-content="' / ' + detailedGrade?.filter(item => (item.semester === semesterValue || semesterValue === 'all')).length || ''"
+                  color="green"
         ></ShowCard>
-        <Card class="flex-none text-[#0ea5e9]" pt:root="bg-white bg-opacity-5" v-if="tabValue === '成绩'">
-          <template #title>
-            <div class="text-left text-[#0ea5e9] text-opacity-80">平均分</div>
-          </template>
-          <template #content>
-            <div class="text-left">
-                <span class="text-2xl font-bold shadow-2xl">
-                  {{ rankAndGrade?.find(item => item.semester === semesterValue)?.gradeAverage || "暂无数据" }}
-                </span>
-              <span class="text-sm font-bold"> / 100.00</span>
-            </div>
-          </template>
-        </Card>
-        <Card class="flex-none text-[#0ea5e9]" pt:root="bg-white bg-opacity-5" v-if="tabValue === '成绩'">
-          <template #title>
-            <div class="text-left text-[#0ea5e9] text-opacity-80">专业排名</div>
-          </template>
-          <template #content>
-            <div class="text-left">
-                <span class="text-2xl font-bold shadow-2xl">
-                  {{ rankAndGrade?.find(item => item.semester === semesterValue)?.gradeAverageRank || "暂无数据" }}
-                </span>
-              <span class="text-sm font-bold"></span>
-            </div>
-          </template>
-        </Card>
+
         <ShowCard v-if="tabValue === '成绩'"
-                  class="text-blue"
+                  title="平均分"
+                  :main-content="rankAndGrade?.find(item => item.semester === semesterValue)?.gradeAverage || '暂无数据'"
+                  sub-content=" / 100.00"
+                  color="blue"
+        ></ShowCard>
+
+        <ShowCard v-if="tabValue === '成绩'"
+                  title="专业排名"
+                  :main-content="rankAndGrade?.find(item => item.semester === semesterValue)?.gradeAverageRank || '暂无数据'"
+                  color="blue"
+        ></ShowCard>
+
+        <ShowCard v-if="tabValue === '成绩'"
+                  color="blue"
                   :title="'及格门数'"
                   :main-content="detailedGrade?.filter(item => (item.semester === semesterValue || semesterValue === 'all') && Number(item.grade) > 60).length"
                   :sub-content="' / ' + detailedGrade?.filter(item => (item.semester === semesterValue || semesterValue === 'all')).length || ''"
@@ -154,11 +138,16 @@ const tabValue = ref("绩点");
         ></ShowCard>
 
 
-        <Button severity="secondary" class="hidden sm:block">
+        <Button severity="secondary" class="hidden sm:block"
+                @click="jumpTo('/student/chengji.php')"
+        >
           查看成绩详情
         </Button>
-        <Button severity="secondary" class="hidden sm:block">
-          查看培养方案
+        <Button severity="secondary" class="hidden sm:block" @click="jumpTo('/pyfa2020/pyfa2022/index.php')">
+          查看培养方案（2020）
+        </Button>
+        <Button severity="secondary" class="hidden sm:block" @click="jumpTo('/pyfa2024/reader.php')">
+          查看培养方案（2024）
         </Button>
       </div>
 

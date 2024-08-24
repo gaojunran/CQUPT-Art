@@ -16,17 +16,38 @@ import TabPanels from 'primevue/tabpanels';
 import TabPanel from 'primevue/tabpanel';
 import Select from 'primevue/select';
 import SelectButton from "primevue/selectbutton";
+import Message from "primevue/message";
+import Divider from "primevue/divider";
 import {router} from "./utils/router.js";
 import Cookies from "universal-cookie";
 import Tooltip from 'primevue/tooltip';
+import CSS from './style.css?url'
 
 // 特定路由直接放行
+const regexList = [
+    /\/student\/chengji\.php/,  // 成绩详情
+    /\/pyfa2024\/reader\.php/,  // 2024培养方案
+    /\/pyfa2020\/pyfa2022\/index\.php/,   // 2020培养方案
+    /\/xk\.php/,    // 选课中心
+    /\/jxpj\//,     // 学评教
+    /\/infoNavi/,     // 各类文档
+    /\/login\.php/,   // 登录
+    // /\/fileShowContent/   // 文档详情
+];
 
+const isURLMatchesRegex = (regexList, currentURL) => {
+    for (let i = 0; i < regexList.length; i++) {
+        if (regexList[i].test(currentURL)) {
+            return true;
+        }
+    }
+    return false;
+}
 
-if (!new Cookies().get("notToStyle" || true)) {
+// console.log(isURLMatchesRegex(regexList, window.location.href) ? "不进行样式修改" : "进行样式修改")
+
+if (!new Cookies().get("notToStyle") && !isURLMatchesRegex(regexList, window.location.href)) {
     console.log("CQUPT-Art插件运行中！祝您使用愉快！")
-
-    import('./style.css');
 
     // 为TailwindCSS的响应式设计
     const viewport = document.createElement('meta');
@@ -57,6 +78,8 @@ if (!new Cookies().get("notToStyle" || true)) {
     app.component('TabPanel', TabPanel);
     app.component('Select', Select);
     app.component('SelectButton', SelectButton);
+    app.component('Message', Message);
+    app.component('Divider', Divider);
     app.directive('tooltip', Tooltip);
     app.mount(
         (() => {
@@ -96,4 +119,13 @@ if (!new Cookies().get("notToStyle" || true)) {
         }
     }
     removeOriginalStyle();
+
+    const injectCSS = (url) => {
+        const link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = url;
+        document.head.appendChild(link);
+    }
+    injectCSS(CSS)
+
 }

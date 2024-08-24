@@ -1,7 +1,7 @@
 <script setup>
 import $ from "jquery";
 let tableNode = $('#stuKsTab-ks > table:nth-child(1)');
-console.log(tableNode.prop('outerHTML'));
+// console.log(tableNode.prop('outerHTML'));
 let data = [];
 const dayOfWeekMap = {
   "1": "周一",
@@ -25,15 +25,18 @@ $(tableNode).find('tr').each(function() {
   data.push(row);
 });
 data.shift();
-console.log(data)
+// console.log(data)
 </script>
 
 <template>
-<DataTable :value="data" showGridlines class="text-sm sm:text-lg">
-  <Column field="courseName" header="课程名称"></Column>
-  <Column field="dateTime" header="日期时间"></Column>
-  <Column field="location" header="地点座位"></Column>
-</DataTable>
+  <Panel class="sm:w-3/4 w-full mx-auto p-1 sm:p-4">
+    <DataTable :value="data"  class="text-sm sm:text-lg">
+      <Column field="courseName" header="课程名称"></Column>
+      <Column field="dateTime" header="日期时间"></Column>
+      <Column field="location" header="地点座位"></Column>
+    </DataTable>
+  </Panel>
+
 </template>
 
 <style scoped>

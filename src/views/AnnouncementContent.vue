@@ -1,24 +1,39 @@
 <script setup>
 import $ from 'jquery';
-let title, content;
-title = $('#mainPanel > h3:nth-child(1)').text();
-console.log(title)
+import {ref} from "vue";
 
-function getPTagTexts(node) {
-  let pTagTexts = [];
-  $(node).find('p').each(function() {
-    const text = $(this).text().trim()
-    text !== title && pTagTexts.push(text);
-  });
+let title = ref(""), content = ref([]), attachments = ref([]);
 
-  return pTagTexts;
+const jumpTo = (url) => {
+  window.location.href = url;
 }
 
-// 示例使用
-let rootNode = $('html body div div#mainPanel div')[0];
-content = getPTagTexts(rootNode);
-// console.log(allText);
+function getAll() {
+  title.value = $('#mainPanel > h3:nth-child(1)').text();
 
+  $('html body div div#mainPanel div').find('p').each(function () {
+    const text = $(this).text().trim()
+    text !== title && content.value.push(text);
+  });
+
+  $('html body div div#mainPanel ul li').each(function () {
+    const attachmentsNode = $(this).find('a');
+    if (attachmentsNode.length > 0) {
+      attachmentsNode.each(function () {
+        const href = $(this).attr('href');
+        const text = $(this).text();
+        // console.log(href)
+        href.includes('DownLoad') && attachments.value.push({
+          href: href,
+          text: text
+        });
+      });
+    }
+  })
+}
+
+getAll();
+// console.log(title.value, content.value, attachments.value)
 </script>
 
 
@@ -28,6 +43,18 @@ content = getPTagTexts(rootNode);
     <div v-for="paragraph in content" :key="paragraph" class="text-left text-sm sm:text-lg mb-4">
       {{ paragraph }}
     </div>
+
+    <Divider></Divider>
+
+    <p v-if="attachments.length" class="text-left text-sm sm:text-lg mb-4">附件下载：</p>
+    <div class="flex gap-4">
+
+      <Button outlined v-for="attachment in attachments" :key="attachment" class="flex-auto"
+              @click="jumpTo(attachment.href)">
+        {{ attachment.text }}
+      </Button>
+    </div>
+
 
   </Panel>
 </template>
