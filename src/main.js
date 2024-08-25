@@ -21,7 +21,7 @@ import Divider from "primevue/divider";
 import {router} from "./utils/router.js";
 import Cookies from "universal-cookie";
 import Tooltip from 'primevue/tooltip';
-import CSS from './style.css?url'
+import CSS from './style.css?inline';
 
 // 特定路由直接放行
 const regexList = [
@@ -120,12 +120,17 @@ if (!new Cookies().get("notToStyle") && !isURLMatchesRegex(regexList, window.loc
     }
     removeOriginalStyle();
 
-    const injectCSS = (url) => {
-        const link = document.createElement('link');
-        link.rel = 'stylesheet';
-        link.href = url;
-        document.head.appendChild(link);
-    }
+    const injectCSS = (css) => {
+        const style = document.createElement('style');
+        style.textContent = css;
+        if (document.head) {
+            document.head.appendChild(style);
+        } else {
+            // 等待 head 加载完成
+            document.addEventListener('DOMContentLoaded', () => {
+                document.head.appendChild(style);
+            });
+        }
+    };
     injectCSS(CSS)
-
 }

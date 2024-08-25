@@ -12,7 +12,7 @@ export default defineConfig({
       userscript: {
         icon: 'https://vitejs.dev/logo.svg',
         namespace: 'gaojunran/CQUPT-Art',
-        match: ['jwzx.cqupt.edu.cn/*'],
+        match: ['jwzx.cqupt.edu.cn/*', 'http://jwzx.cqupt.edu.cn/*'],
         license: 'GPL-3.0 license',
         author: 'GaoJunRan',
         connect: ['cqupt.edu.cn'],

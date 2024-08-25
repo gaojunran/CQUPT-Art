@@ -124,15 +124,13 @@ const jumpTo = (url) => {
         ></ShowCard>
 
         <ShowCard v-if="tabValue === '学分'"
-                  class="text-purple"
-                  :color="'#d4aafb'" :title="'必修通过学分'"
+                  color="purple" :title="'必修通过学分'"
                   :main-content="detailedGrade?.filter(item => (item.semester === semesterValue || semesterValue === 'all') && item.isRequired && item.grade > 60).reduce((acc, cur) => acc + Number(cur.credit), 0)"
                   :sub-content="' / ' + detailedGrade?.filter(item => (item.semester === semesterValue || semesterValue === 'all')&& item.isRequired).reduce((acc, cur) => acc + Number(cur.credit), 0) || ''"
         ></ShowCard>
 
         <ShowCard v-if="tabValue === '学分'"
-                  class="text-purple"
-                  :color="'#d4aafb'" :title="'选修通过学分'"
+                  color="purple" :title="'选修通过学分'"
                   :main-content="detailedGrade?.filter(item => (item.semester === semesterValue || semesterValue === 'all') && !item.isRequired && item.grade > 60).reduce((acc, cur) => acc + Number(cur.credit), 0)"
                   :sub-content="' / ' + detailedGrade?.filter(item => (item.semester === semesterValue || semesterValue === 'all')&& !item.isRequired).reduce((acc, cur) => acc + Number(cur.credit), 0) || ''"
         ></ShowCard>

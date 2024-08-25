@@ -8,20 +8,26 @@ const props = defineProps({
     default: "",
   },
 });
-// console.log(props.color)
+
+const colorClassNameMapping = {
+  'green': 'text-green',
+  'blue': 'text-blue',
+  'purple': 'text-purple',
+}
+const colorClassName = colorClassNameMapping[props.color]
 </script>
 
 <template>
   <Card class="flex-none" :pt:root:class="['border border-gray-500 !bg-white !bg-opacity-5']">
     <template #title>
-      <div class="text-left text-opacity-80 " :class="[`text-${props.color}`]">{{ props.title }}</div>
+      <div class="text-left text-opacity-80 " :class="[colorClassName]">{{ props.title }}</div>
     </template>
     <template #content>
       <div class="text-left">
-        <span class="text-2xl font-bold shadow-2xl" :class="[`text-${props.color}`]">
+        <span class="text-2xl font-bold shadow-2xl" :class="[colorClassName]">
           {{ mainContent }}
         </span>
-        <span class="text-sm font-bold" :class="[`text-${props.color}`]">{{ subContent }}</span>
+        <span class="text-sm font-bold" :class="[colorClassName]">{{ subContent }}</span>
       </div>
     </template>
   </Card>
