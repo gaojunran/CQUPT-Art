@@ -3,11 +3,9 @@ import {onMounted, ref} from "vue";
 import $ from "jquery";
 import Annoucements from "../components/Annoucements.vue";
 import Calender from "../components/Calender.vue";
-import TimeTable from "../components/TimeTable.vue";
 
 const isAnnouncementOverlay = ref(false);
 const isCalendarOverlay = ref(false);
-const isTimeTableOverlay = ref(false);
 let announcementData = ref([]);
 let dateData = ref("");
 
@@ -59,6 +57,13 @@ const parseDate = () => {
       .replace(/周星期/, "周 星期")
       .replace(/星期./, "$&，")
       .replace(/日/, "日。")
+      .replace(/星期1/, "星期一")
+      .replace(/星期2/, "星期二")
+      .replace(/星期3/, "星期三")
+      .replace(/星期4/, "星期四")
+      .replace(/星期5/, "星期五")
+      .replace(/星期6/, "星期六")
+      .replace(/星期7/, "星期日")
   ;
   // console.log(dateData.value)
 }
@@ -83,23 +88,23 @@ onMounted(() => {
 
   <Panel header="快捷服务" class="w-2/3 sm:w-1/2 mx-auto mt-4" v-if="isLogin">
     <ButtonGroup class="hidden sm:block">
-      <Button class="font-bold" outlined @click="isTimeTableOverlay = true">课 程 表</Button>
+      <Button class="font-bold" outlined @click="jumpTo('/user.php')">下载/订阅课表</Button>
       <Button class="font-bold" outlined @click="jumpTo('/student/chengjiPm.php')">成绩查询</Button>
-      <Button class="font-bold" outlined @click="jumpTo('/student/ksap.php')">考试信息</Button>
+      <Button class="font-bold" outlined @click="jumpTo('/student/ksap.php')">考试安排</Button>
       <Button class="font-bold" outlined @click="jumpTo('/xk.php')">选课中心</Button>
       <Button class="font-bold" outlined @click="jumpTo('/jxpj/index.php')">学 评 教</Button>
     </ButtonGroup>
 
     <div class="flex flex-col sm:hidden gap-2">
-      <Button class="font-bold block w-full text-sm" outlined @click="isTimeTableOverlay = true">课 程 表</Button>
-      <Button class="font-bold block w-full text-sm" outlined @click="jumpTo('/student/chengjiPm.php')">成绩查询</Button>
-      <Button class="font-bold block w-full text-sm" outlined @click="jumpTo('/student/ksap.php')">考试信息</Button>
+      <Button class="font-bold block w-full text-sm" outlined @click="jumpTo('/user.php')">下载/订阅课表</Button>
+      <Button class="font-bold block w-full text-sm" outlined @click="jumpTo('/student/chengjiPm.php')">成绩查询
+      </Button>
+      <Button class="font-bold block w-full text-sm" outlined @click="jumpTo('/student/ksap.php')">考试安排</Button>
       <Button class="font-bold block w-full text-sm" outlined @click="jumpTo('/xk.php')">选课中心</Button>
-      <Button class="font-bold block w-full text-sm" outlined  @click="jumpTo('/jxpj/index.php')">学 评 教</Button>
+      <Button class="font-bold block w-full text-sm" outlined @click="jumpTo('/jxpj/index.php')">学 评 教</Button>
     </div>
     <Annoucements v-model:visible="isAnnouncementOverlay" :data="announcementData"></Annoucements>
     <Calender v-model:visible="isCalendarOverlay"></Calender>
-    <TimeTable v-model:visible="isTimeTableOverlay"></TimeTable>
 
   </Panel>
 
@@ -107,7 +112,9 @@ onMounted(() => {
     <ButtonGroup class="hidden sm:block">
       <Button class="font-bold" outlined @click="isAnnouncementOverlay = true" label="Info" severity="info">教务动态
       </Button>
-      <Button class="font-bold" outlined @click="jumpTo('https://cc.cqupt.edu.cn')" label="Info" severity="info">课程中心</Button>
+      <Button class="font-bold" outlined @click="jumpTo('https://cc.cqupt.edu.cn')" label="Info" severity="info">
+        课程中心
+      </Button>
       <Button class="font-bold" outlined @click="jumpTo('/infoNavi.php')" label="Info" severity="info">各类文档</Button>
       <Button class="font-bold" outlined @click="isCalendarOverlay = true" label="Info" severity="info">校 历</Button>
     </ButtonGroup>
@@ -118,10 +125,13 @@ onMounted(() => {
       <Button class="font-bold block w-full text-sm" outlined @click="jumpTo('https://cc.cqupt.edu.cn')" label="Info"
               severity="info">课程中心
       </Button>
-      <Button class="font-bold block w-full text-sm" outlined @click="jumpTo('/infoNavi.php')" label="Info" severity="info">
+      <Button class="font-bold block w-full text-sm" outlined @click="jumpTo('/infoNavi.php')" label="Info"
+              severity="info">
         各类文档
       </Button>
-      <Button class="font-bold block w-full text-sm" outlined @click="isCalendarOverlay = true" label="Info" severity="info">校 历</Button>
+      <Button class="font-bold block w-full text-sm" outlined @click="isCalendarOverlay = true" label="Info"
+              severity="info">校 历
+      </Button>
     </div>
   </Panel>
 

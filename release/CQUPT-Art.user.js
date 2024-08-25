@@ -1,12 +1,13 @@
 // ==UserScript==
 // @name         CQUPT-Art
 // @namespace    gaojunran/CQUPT-Art
-// @version      0.9.1
+// @version      0.9.2
 // @author       GaoJunRan
 // @description  重邮学子的极简「教务在线」
 // @license      GPL-3.0 license
 // @icon         https://vitejs.dev/logo.svg
 // @match        jwzx.cqupt.edu.cn/*
+// @match        http://jwzx.cqupt.edu.cn/*
 // @require      https://cdn.jsdelivr.net/npm/vue@3.4.38/dist/vue.global.prod.js
 // @connect      cqupt.edu.cn
 // ==/UserScript==
@@ -32,7 +33,7 @@
     }
     return newParams;
   }
-  const noop = () => {
+  const noop$1 = () => {
   };
   const isArray$1 = Array.isArray;
   const HASH_RE = /#/g;
@@ -699,7 +700,7 @@
       }
       return originalMatcher ? () => {
         removeRoute(originalMatcher);
-      } : noop;
+      } : noop$1;
     }
     function removeRoute(matcherRef) {
       if (isRouteName(matcherRef)) {
@@ -1060,7 +1061,7 @@
         return router2[vue.unref(props.replace) ? "replace" : "push"](
           vue.unref(props.to)
           // avoid uncaught errors are they are logged anyway
-        ).catch(noop);
+        ).catch(noop$1);
       }
       return Promise.resolve();
     }
@@ -1538,7 +1539,7 @@
         const toLocation = resolve2(to);
         const shouldRedirect = handleRedirectRecord(toLocation);
         if (shouldRedirect) {
-          pushWithRedirect(assign(shouldRedirect, { replace: true }), toLocation).catch(noop);
+          pushWithRedirect(assign(shouldRedirect, { replace: true }), toLocation).catch(noop$1);
           return;
         }
         pendingLocation = toLocation;
@@ -1571,7 +1572,7 @@
               ) && !info.delta && info.type === NavigationType.pop) {
                 routerHistory.go(-1, false);
               }
-            }).catch(noop);
+            }).catch(noop$1);
             return Promise.reject();
           }
           if (info.delta) {
@@ -1603,7 +1604,7 @@
             }
           }
           triggerAfterEach(toLocation, from, failure);
-        }).catch(noop);
+        }).catch(noop$1);
       });
     }
     let readyHandlers = useCallbacks();
@@ -1744,7 +1745,67 @@
     }
     return false;
   }
+  function toValue$1(r) {
+    return typeof r === "function" ? r() : vue.unref(r);
+  }
+  const isClient$1 = typeof window !== "undefined" && typeof document !== "undefined";
   typeof WorkerGlobalScope !== "undefined" && globalThis instanceof WorkerGlobalScope;
+  const toString = Object.prototype.toString;
+  const isObject$1 = (val) => toString.call(val) === "[object Object]";
+  const noop = () => {
+  };
+  function createSingletonPromise(fn) {
+    let _promise;
+    function wrapper() {
+      if (!_promise)
+        _promise = fn();
+      return _promise;
+    }
+    wrapper.reset = async () => {
+      const _prev = _promise;
+      _promise = void 0;
+      if (_prev)
+        await _prev;
+    };
+    return wrapper;
+  }
+  function useTimeoutFn(cb, interval, options2 = {}) {
+    const {
+      immediate = true
+    } = options2;
+    const isPending = vue.ref(false);
+    let timer = null;
+    function clear() {
+      if (timer) {
+        clearTimeout(timer);
+        timer = null;
+      }
+    }
+    function stop() {
+      isPending.value = false;
+      clear();
+    }
+    function start(...args) {
+      clear();
+      isPending.value = true;
+      timer = setTimeout(() => {
+        isPending.value = false;
+        timer = null;
+        cb(...args);
+      }, toValue$1(interval));
+    }
+    if (immediate) {
+      isPending.value = true;
+      if (isClient$1)
+        start();
+    }
+    tryOnScopeDispose(stop);
+    return {
+      isPending: vue.readonly(isPending),
+      start,
+      stop
+    };
+  }
   /*!
    * cookie
    * Copyright(c) 2012-2014 Roman Shtylman
@@ -26472,7 +26533,7 @@
       var push = arr.push;
       var indexOf = arr.indexOf;
       var class2type = {};
-      var toString = class2type.toString;
+      var toString2 = class2type.toString;
       var hasOwn = class2type.hasOwnProperty;
       var fnToString = hasOwn.toString;
       var ObjectFunctionString = fnToString.call(Object);
@@ -26508,7 +26569,7 @@
         if (obj == null) {
           return obj + "";
         }
-        return typeof obj === "object" || typeof obj === "function" ? class2type[toString.call(obj)] || "object" : typeof obj;
+        return typeof obj === "object" || typeof obj === "function" ? class2type[toString2.call(obj)] || "object" : typeof obj;
       }
       var version = "3.7.1", rhtmlSuffix = /HTML$/i, jQuery = function(selector, context) {
         return new jQuery.fn.init(selector, context);
@@ -26630,7 +26691,7 @@
         },
         isPlainObject: function(obj) {
           var proto, Ctor;
-          if (!obj || toString.call(obj) !== "[object Object]") {
+          if (!obj || toString2.call(obj) !== "[object Object]") {
             return false;
           }
           proto = getProto(obj);
@@ -32891,115 +32952,15 @@
       };
     }
   };
-  const _hoisted_1$5 = /* @__PURE__ */ vue.createElementVNode("div", { class: "mb-4 text-lg" }, [
-    /* @__PURE__ */ vue.createElementVNode("p", { class: "font-bold" }, "当前版本插件尚未提供课表的解析、查看功能。"),
-    /* @__PURE__ */ vue.createElementVNode("p", null, "您可移步至CQUPT-ics项目，使用Python命令行提取本人课表，并导出为ics文件用于系统日历，或将脚本部署到服务器上实现动态的URL订阅。"),
-    /* @__PURE__ */ vue.createElementVNode("p", null, "您也可使用小爱课程表、WakeUp课程表，均已适配重庆邮电大学的教务信息。")
-  ], -1);
-  const _hoisted_2$3 = /* @__PURE__ */ vue.createElementVNode("a", { href: "https://github.com/qwqVictor/CQUPT-ics" }, "CQUPT-ics", -1);
-  const _hoisted_3$3 = /* @__PURE__ */ vue.createElementVNode("a", { href: "https://i.ai.mi.com/h5/precache/ai-schedule/#/home" }, "小爱课程表", -1);
-  const _hoisted_4$2 = /* @__PURE__ */ vue.createElementVNode("a", { href: "https://www.wakeup.fun/" }, "WakeUp课程表", -1);
-  const _hoisted_5 = { class: "sm:hidden flex flex-col gap-4" };
-  const _hoisted_6 = /* @__PURE__ */ vue.createElementVNode("a", { href: "https://github.com/qwqVictor/CQUPT-ics" }, "CQUPT-ics", -1);
-  const _hoisted_7 = /* @__PURE__ */ vue.createElementVNode("a", { href: "https://i.ai.mi.com/h5/precache/ai-schedule/#/home" }, "小爱课程表", -1);
-  const _hoisted_8 = /* @__PURE__ */ vue.createElementVNode("a", { href: "https://www.wakeup.fun/" }, "WakeUp课程表", -1);
+  const _hoisted_1$5 = /* @__PURE__ */ vue.createElementVNode("div", { class: "text-center font-bold mb-4 text-sm" }, "您还未登录，请点击下方按钮完成登录。", -1);
+  const _hoisted_2$3 = { class: "flex flex-col sm:hidden gap-2" };
+  const _hoisted_3$3 = { class: "flex flex-col sm:hidden gap-2" };
+  const _hoisted_4$2 = { class: "flex flex-col sm:hidden gap-2" };
   const _sfc_main$6 = {
-    __name: "TimeTable",
-    props: {
-      "visible": {},
-      "visibleModifiers": {}
-    },
-    emits: ["update:visible"],
-    setup(__props) {
-      const visible = vue.useModel(__props, "visible");
-      return (_ctx, _cache) => {
-        const _component_Button = vue.resolveComponent("Button");
-        const _component_ButtonGroup = vue.resolveComponent("ButtonGroup");
-        const _component_Card = vue.resolveComponent("Card");
-        const _component_Dialog = vue.resolveComponent("Dialog");
-        return vue.openBlock(), vue.createBlock(_component_Dialog, {
-          visible: visible.value,
-          "onUpdate:visible": _cache[0] || (_cache[0] = ($event) => visible.value = $event),
-          modal: "",
-          header: "课程表",
-          style: { width: "50rem" },
-          breakpoints: { "1199px": "75vw", "575px": "90vw" }
-        }, {
-          default: vue.withCtx(() => [
-            vue.createVNode(_component_Card, null, {
-              content: vue.withCtx(() => [
-                _hoisted_1$5,
-                vue.createVNode(_component_ButtonGroup, { class: "hidden sm:block" }, {
-                  default: vue.withCtx(() => [
-                    vue.createVNode(_component_Button, { outlined: "" }, {
-                      default: vue.withCtx(() => [
-                        _hoisted_2$3
-                      ]),
-                      _: 1
-                    }),
-                    vue.createVNode(_component_Button, { outlined: "" }, {
-                      default: vue.withCtx(() => [
-                        _hoisted_3$3
-                      ]),
-                      _: 1
-                    }),
-                    vue.createVNode(_component_Button, { outlined: "" }, {
-                      default: vue.withCtx(() => [
-                        _hoisted_4$2
-                      ]),
-                      _: 1
-                    })
-                  ]),
-                  _: 1
-                }),
-                vue.createElementVNode("div", _hoisted_5, [
-                  vue.createVNode(_component_Button, {
-                    outlined: "",
-                    class: "block w-full"
-                  }, {
-                    default: vue.withCtx(() => [
-                      _hoisted_6
-                    ]),
-                    _: 1
-                  }),
-                  vue.createVNode(_component_Button, {
-                    outlined: "",
-                    class: "block w-full"
-                  }, {
-                    default: vue.withCtx(() => [
-                      _hoisted_7
-                    ]),
-                    _: 1
-                  }),
-                  vue.createVNode(_component_Button, {
-                    outlined: "",
-                    class: "block w-full"
-                  }, {
-                    default: vue.withCtx(() => [
-                      _hoisted_8
-                    ]),
-                    _: 1
-                  })
-                ])
-              ]),
-              _: 1
-            })
-          ]),
-          _: 1
-        }, 8, ["visible"]);
-      };
-    }
-  };
-  const _hoisted_1$4 = /* @__PURE__ */ vue.createElementVNode("div", { class: "text-center font-bold mb-4 text-sm" }, "您还未登录，请点击下方按钮完成登录。", -1);
-  const _hoisted_2$2 = { class: "flex flex-col sm:hidden gap-2" };
-  const _hoisted_3$2 = { class: "flex flex-col sm:hidden gap-2" };
-  const _hoisted_4$1 = { class: "flex flex-col sm:hidden gap-2" };
-  const _sfc_main$5 = {
     __name: "Main",
     setup(__props) {
       const isAnnouncementOverlay = vue.ref(false);
       const isCalendarOverlay = vue.ref(false);
-      const isTimeTableOverlay = vue.ref(false);
       let announcementData = vue.ref([]);
       let dateData = vue.ref("");
       const isLogin = vue.ref(false);
@@ -33037,7 +32998,7 @@
       };
       const parseDate = () => {
         const $dateNode = $("#header > div:nth-child(1)");
-        dateData.value += $dateNode.text().trim().replace(/^.*学期 /, "今天是").replace(/\s/g, "").replace(/周星期/, "周 星期").replace(/星期./, "$&，").replace(/日/, "日。");
+        dateData.value += $dateNode.text().trim().replace(/^.*学期 /, "今天是").replace(/\s/g, "").replace(/周星期/, "周 星期").replace(/星期./, "$&，").replace(/日/, "日。").replace(/星期1/, "星期一").replace(/星期2/, "星期二").replace(/星期3/, "星期三").replace(/星期4/, "星期四").replace(/星期5/, "星期五").replace(/星期6/, "星期六").replace(/星期7/, "星期日");
       };
       vue.onMounted(() => {
         parseDate();
@@ -33056,7 +33017,7 @@
             class: "w-2/3 sm:w-1/2 mx-auto"
           }, {
             default: vue.withCtx(() => [
-              _hoisted_1$4,
+              _hoisted_1$5,
               vue.createVNode(_component_Button, {
                 class: "font-bold",
                 outlined: "",
@@ -33088,10 +33049,10 @@
                   vue.createVNode(_component_Button, {
                     class: "font-bold",
                     outlined: "",
-                    onClick: _cache[1] || (_cache[1] = ($event) => isTimeTableOverlay.value = true)
+                    onClick: _cache[1] || (_cache[1] = ($event) => jumpTo("/user.php"))
                   }, {
                     default: vue.withCtx(() => [
-                      vue.createTextVNode("课 程 表")
+                      vue.createTextVNode("下载/订阅课表")
                     ]),
                     _: 1
                   }),
@@ -33111,7 +33072,7 @@
                     onClick: _cache[3] || (_cache[3] = ($event) => jumpTo("/student/ksap.php"))
                   }, {
                     default: vue.withCtx(() => [
-                      vue.createTextVNode("考试信息")
+                      vue.createTextVNode("考试安排")
                     ]),
                     _: 1
                   }),
@@ -33138,14 +33099,14 @@
                 ]),
                 _: 1
               }),
-              vue.createElementVNode("div", _hoisted_2$2, [
+              vue.createElementVNode("div", _hoisted_2$3, [
                 vue.createVNode(_component_Button, {
                   class: "font-bold block w-full text-sm",
                   outlined: "",
-                  onClick: _cache[6] || (_cache[6] = ($event) => isTimeTableOverlay.value = true)
+                  onClick: _cache[6] || (_cache[6] = ($event) => jumpTo("/user.php"))
                 }, {
                   default: vue.withCtx(() => [
-                    vue.createTextVNode("课 程 表")
+                    vue.createTextVNode("下载/订阅课表")
                   ]),
                   _: 1
                 }),
@@ -33155,7 +33116,7 @@
                   onClick: _cache[7] || (_cache[7] = ($event) => jumpTo("/student/chengjiPm.php"))
                 }, {
                   default: vue.withCtx(() => [
-                    vue.createTextVNode("成绩查询")
+                    vue.createTextVNode("成绩查询 ")
                   ]),
                   _: 1
                 }),
@@ -33165,7 +33126,7 @@
                   onClick: _cache[8] || (_cache[8] = ($event) => jumpTo("/student/ksap.php"))
                 }, {
                   default: vue.withCtx(() => [
-                    vue.createTextVNode("考试信息")
+                    vue.createTextVNode("考试安排")
                   ]),
                   _: 1
                 }),
@@ -33198,10 +33159,6 @@
               vue.createVNode(_sfc_main$7, {
                 visible: isCalendarOverlay.value,
                 "onUpdate:visible": _cache[12] || (_cache[12] = ($event) => isCalendarOverlay.value = $event)
-              }, null, 8, ["visible"]),
-              vue.createVNode(_sfc_main$6, {
-                visible: isTimeTableOverlay.value,
-                "onUpdate:visible": _cache[13] || (_cache[13] = ($event) => isTimeTableOverlay.value = $event)
               }, null, 8, ["visible"])
             ]),
             _: 1
@@ -33217,7 +33174,7 @@
                   vue.createVNode(_component_Button, {
                     class: "font-bold",
                     outlined: "",
-                    onClick: _cache[14] || (_cache[14] = ($event) => isAnnouncementOverlay.value = true),
+                    onClick: _cache[13] || (_cache[13] = ($event) => isAnnouncementOverlay.value = true),
                     label: "Info",
                     severity: "info"
                   }, {
@@ -33229,19 +33186,19 @@
                   vue.createVNode(_component_Button, {
                     class: "font-bold",
                     outlined: "",
-                    onClick: _cache[15] || (_cache[15] = ($event) => jumpTo("https://cc.cqupt.edu.cn")),
+                    onClick: _cache[14] || (_cache[14] = ($event) => jumpTo("https://cc.cqupt.edu.cn")),
                     label: "Info",
                     severity: "info"
                   }, {
                     default: vue.withCtx(() => [
-                      vue.createTextVNode("课程中心")
+                      vue.createTextVNode(" 课程中心 ")
                     ]),
                     _: 1
                   }),
                   vue.createVNode(_component_Button, {
                     class: "font-bold",
                     outlined: "",
-                    onClick: _cache[16] || (_cache[16] = ($event) => jumpTo("/infoNavi.php")),
+                    onClick: _cache[15] || (_cache[15] = ($event) => jumpTo("/infoNavi.php")),
                     label: "Info",
                     severity: "info"
                   }, {
@@ -33253,7 +33210,7 @@
                   vue.createVNode(_component_Button, {
                     class: "font-bold",
                     outlined: "",
-                    onClick: _cache[17] || (_cache[17] = ($event) => isCalendarOverlay.value = true),
+                    onClick: _cache[16] || (_cache[16] = ($event) => isCalendarOverlay.value = true),
                     label: "Info",
                     severity: "info"
                   }, {
@@ -33265,11 +33222,11 @@
                 ]),
                 _: 1
               }),
-              vue.createElementVNode("div", _hoisted_3$2, [
+              vue.createElementVNode("div", _hoisted_3$3, [
                 vue.createVNode(_component_Button, {
                   class: "font-bold block w-full text-sm",
                   outlined: "",
-                  onClick: _cache[18] || (_cache[18] = ($event) => isAnnouncementOverlay.value = true),
+                  onClick: _cache[17] || (_cache[17] = ($event) => isAnnouncementOverlay.value = true),
                   label: "Info",
                   severity: "info"
                 }, {
@@ -33281,7 +33238,7 @@
                 vue.createVNode(_component_Button, {
                   class: "font-bold block w-full text-sm",
                   outlined: "",
-                  onClick: _cache[19] || (_cache[19] = ($event) => jumpTo("https://cc.cqupt.edu.cn")),
+                  onClick: _cache[18] || (_cache[18] = ($event) => jumpTo("https://cc.cqupt.edu.cn")),
                   label: "Info",
                   severity: "info"
                 }, {
@@ -33293,7 +33250,7 @@
                 vue.createVNode(_component_Button, {
                   class: "font-bold block w-full text-sm",
                   outlined: "",
-                  onClick: _cache[20] || (_cache[20] = ($event) => jumpTo("/infoNavi.php")),
+                  onClick: _cache[19] || (_cache[19] = ($event) => jumpTo("/infoNavi.php")),
                   label: "Info",
                   severity: "info"
                 }, {
@@ -33305,12 +33262,12 @@
                 vue.createVNode(_component_Button, {
                   class: "font-bold block w-full text-sm",
                   outlined: "",
-                  onClick: _cache[21] || (_cache[21] = ($event) => isCalendarOverlay.value = true),
+                  onClick: _cache[20] || (_cache[20] = ($event) => isCalendarOverlay.value = true),
                   label: "Info",
                   severity: "info"
                 }, {
                   default: vue.withCtx(() => [
-                    vue.createTextVNode("校 历")
+                    vue.createTextVNode("校 历 ")
                   ]),
                   _: 1
                 })
@@ -33344,7 +33301,7 @@
                 ]),
                 _: 1
               }),
-              vue.createElementVNode("div", _hoisted_4$1, [
+              vue.createElementVNode("div", _hoisted_4$2, [
                 (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(linkList.value, (item, index2) => {
                   return vue.openBlock(), vue.createBlock(_component_Button, {
                     key: index2,
@@ -33368,13 +33325,13 @@
       };
     }
   };
-  const _hoisted_1$3 = { class: "text-lg sm:text-2xl font-bold mb-4" };
-  const _hoisted_2$1 = {
+  const _hoisted_1$4 = { class: "text-lg sm:text-2xl font-bold mb-4" };
+  const _hoisted_2$2 = {
     key: 0,
     class: "text-left text-sm sm:text-lg mb-4"
   };
-  const _hoisted_3$1 = { class: "flex gap-4" };
-  const _sfc_main$4 = {
+  const _hoisted_3$2 = { class: "flex gap-4" };
+  const _sfc_main$5 = {
     __name: "AnnouncementContent",
     setup(__props) {
       let title = vue.ref(""), content2 = vue.ref([]), attachments = vue.ref([]);
@@ -33408,7 +33365,7 @@
         const _component_Panel = vue.resolveComponent("Panel");
         return vue.openBlock(), vue.createBlock(_component_Panel, { class: "w-full sm:w-2/3 mx-auto" }, {
           default: vue.withCtx(() => [
-            vue.createElementVNode("div", _hoisted_1$3, vue.toDisplayString(vue.unref(title)), 1),
+            vue.createElementVNode("div", _hoisted_1$4, vue.toDisplayString(vue.unref(title)), 1),
             (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(vue.unref(content2), (paragraph) => {
               return vue.openBlock(), vue.createElementBlock("div", {
                 key: paragraph,
@@ -33416,8 +33373,8 @@
               }, vue.toDisplayString(paragraph), 1);
             }), 128)),
             vue.createVNode(_component_Divider),
-            vue.unref(attachments).length ? (vue.openBlock(), vue.createElementBlock("p", _hoisted_2$1, "附件下载：")) : vue.createCommentVNode("", true),
-            vue.createElementVNode("div", _hoisted_3$1, [
+            vue.unref(attachments).length ? (vue.openBlock(), vue.createElementBlock("p", _hoisted_2$2, "附件下载：")) : vue.createCommentVNode("", true),
+            vue.createElementVNode("div", _hoisted_3$2, [
               (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(vue.unref(attachments), (attachment) => {
                 return vue.openBlock(), vue.createBlock(_component_Button, {
                   outlined: "",
@@ -33438,7 +33395,7 @@
       };
     }
   };
-  const _sfc_main$3 = {
+  const _sfc_main$4 = {
     __name: "ExamInfoTable",
     setup(__props) {
       let tableNode = $("#stuKsTab-ks > table:nth-child(1)");
@@ -33465,11 +33422,15 @@
         const _component_Column = vue.resolveComponent("Column");
         const _component_DataTable = vue.resolveComponent("DataTable");
         const _component_Panel = vue.resolveComponent("Panel");
-        return vue.openBlock(), vue.createBlock(_component_Panel, { class: "sm:w-3/4 w-full mx-auto p-1 sm:p-4" }, {
+        return vue.openBlock(), vue.createBlock(_component_Panel, {
+          header: "考试安排",
+          "pt:header:class": "!text-xl",
+          class: "sm:w-3/4 w-full mx-auto p-1 sm:p-4"
+        }, {
           default: vue.withCtx(() => [
             vue.createVNode(_component_DataTable, {
               value: vue.unref(data22),
-              class: "text-sm sm:text-lg"
+              class: "text-sm sm:text-base"
             }, {
               default: vue.withCtx(() => [
                 vue.createVNode(_component_Column, {
@@ -33493,8 +33454,8 @@
       };
     }
   };
-  const _hoisted_1$2 = /* @__PURE__ */ vue.createElementVNode("div", { class: "text-center font-bold mb-4 text-sm" }, "请挂载重邮VPN，或在校园网下继续访问。", -1);
-  const _sfc_main$2 = {
+  const _hoisted_1$3 = /* @__PURE__ */ vue.createElementVNode("div", { class: "text-center font-bold mb-4 text-sm" }, "请挂载重邮VPN，或在校园网下继续访问。", -1);
+  const _sfc_main$3 = {
     __name: "VPNGuard",
     setup(__props) {
       const jumpTo = (url) => {
@@ -33505,7 +33466,7 @@
         const _component_Panel = vue.resolveComponent("Panel");
         return vue.openBlock(), vue.createBlock(_component_Panel, { class: "w-2/3 sm:w-1/2 mx-auto" }, {
           default: vue.withCtx(() => [
-            _hoisted_1$2,
+            _hoisted_1$3,
             vue.createVNode(_component_Button, {
               class: "font-bold",
               outlined: "",
@@ -33522,8 +33483,8 @@
       };
     }
   };
-  const _hoisted_1$1 = { class: "text-left" };
-  const _sfc_main$1 = {
+  const _hoisted_1$2 = { class: "text-left" };
+  const _sfc_main$2 = {
     __name: "ShowCard",
     props: {
       color: String,
@@ -33554,7 +33515,7 @@
             }, vue.toDisplayString(props.title), 3)
           ]),
           content: vue.withCtx(() => [
-            vue.createElementVNode("div", _hoisted_1$1, [
+            vue.createElementVNode("div", _hoisted_1$2, [
               vue.createElementVNode("span", {
                 class: vue.normalizeClass(["text-2xl font-bold shadow-2xl", [vue.unref(colorClassName)]])
               }, vue.toDisplayString(__props.mainContent), 3),
@@ -33568,11 +33529,11 @@
       };
     }
   };
-  const _hoisted_1 = { class: "sm:flex block justify-between" };
-  const _hoisted_2 = { class: "block sm:flex mt-8" };
-  const _hoisted_3 = { class: "w-full sm:w-1/3 flex flex-col gap-4" };
-  const _hoisted_4 = { class: "w-full sm:w-2/3 mt-4 sm:mt-0 ml-0 sm:ml-4" };
-  const _sfc_main = {
+  const _hoisted_1$1 = { class: "sm:flex block justify-between" };
+  const _hoisted_2$1 = { class: "block sm:flex mt-8" };
+  const _hoisted_3$1 = { class: "w-full sm:w-1/3 flex flex-col gap-4" };
+  const _hoisted_4$1 = { class: "w-full sm:w-2/3 mt-4 sm:mt-0 ml-0 sm:ml-4" };
+  const _sfc_main$1 = {
     __name: "GradeShow",
     setup(__props) {
       let detailedGrade = vue.ref([]);
@@ -33639,7 +33600,7 @@
           default: vue.withCtx(() => {
             var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p;
             return [
-              vue.createElementVNode("div", _hoisted_1, [
+              vue.createElementVNode("div", _hoisted_1$1, [
                 vue.createVNode(_component_SelectButton, {
                   class: "w-3/4 sm:w-auto",
                   modelValue: tabValue.value,
@@ -33654,56 +33615,56 @@
                   "onUpdate:modelValue": _cache[1] || (_cache[1] = ($event) => myChoice.value = $event)
                 }, null, 8, ["modelValue"])
               ]),
-              vue.createElementVNode("div", _hoisted_2, [
-                vue.createElementVNode("div", _hoisted_3, [
-                  tabValue.value === "绩点" ? (vue.openBlock(), vue.createBlock(_sfc_main$1, {
+              vue.createElementVNode("div", _hoisted_2$1, [
+                vue.createElementVNode("div", _hoisted_3$1, [
+                  tabValue.value === "绩点" ? (vue.openBlock(), vue.createBlock(_sfc_main$2, {
                     key: 0,
                     title: "平均学分绩点",
                     "main-content": ((_b = (_a = vue.unref(rankAndGrade)) == null ? void 0 : _a.find((item) => item.semester === semesterValue.value)) == null ? void 0 : _b.gpa) || "暂无数据",
                     "sub-content": " / 4.0",
                     color: "green"
                   }, null, 8, ["main-content"])) : vue.createCommentVNode("", true),
-                  tabValue.value === "绩点" ? (vue.openBlock(), vue.createBlock(_sfc_main$1, {
+                  tabValue.value === "绩点" ? (vue.openBlock(), vue.createBlock(_sfc_main$2, {
                     key: 1,
                     title: "专业排名",
                     "main-content": ((_d = (_c = vue.unref(rankAndGrade)) == null ? void 0 : _c.find((item) => item.semester === semesterValue.value)) == null ? void 0 : _d.gpaRank) || "暂无数据",
                     color: "green"
                   }, null, 8, ["main-content"])) : vue.createCommentVNode("", true),
-                  tabValue.value === "绩点" ? (vue.openBlock(), vue.createBlock(_sfc_main$1, {
+                  tabValue.value === "绩点" ? (vue.openBlock(), vue.createBlock(_sfc_main$2, {
                     key: 2,
                     title: "满绩门数",
                     "main-content": (_e = vue.unref(detailedGrade)) == null ? void 0 : _e.filter((item) => (item.semester === semesterValue.value || semesterValue.value === "all") && Number(item.gradePoint) === 4).length,
                     "sub-content": " / " + ((_f = vue.unref(detailedGrade)) == null ? void 0 : _f.filter((item) => item.semester === semesterValue.value || semesterValue.value === "all").length) || "",
                     color: "green"
                   }, null, 8, ["main-content", "sub-content"])) : vue.createCommentVNode("", true),
-                  tabValue.value === "成绩" ? (vue.openBlock(), vue.createBlock(_sfc_main$1, {
+                  tabValue.value === "成绩" ? (vue.openBlock(), vue.createBlock(_sfc_main$2, {
                     key: 3,
                     title: "平均分",
                     "main-content": ((_h = (_g = vue.unref(rankAndGrade)) == null ? void 0 : _g.find((item) => item.semester === semesterValue.value)) == null ? void 0 : _h.gradeAverage) || "暂无数据",
                     "sub-content": " / 100.00",
                     color: "blue"
                   }, null, 8, ["main-content"])) : vue.createCommentVNode("", true),
-                  tabValue.value === "成绩" ? (vue.openBlock(), vue.createBlock(_sfc_main$1, {
+                  tabValue.value === "成绩" ? (vue.openBlock(), vue.createBlock(_sfc_main$2, {
                     key: 4,
                     title: "专业排名",
                     "main-content": ((_j = (_i = vue.unref(rankAndGrade)) == null ? void 0 : _i.find((item) => item.semester === semesterValue.value)) == null ? void 0 : _j.gradeAverageRank) || "暂无数据",
                     color: "blue"
                   }, null, 8, ["main-content"])) : vue.createCommentVNode("", true),
-                  tabValue.value === "成绩" ? (vue.openBlock(), vue.createBlock(_sfc_main$1, {
+                  tabValue.value === "成绩" ? (vue.openBlock(), vue.createBlock(_sfc_main$2, {
                     key: 5,
                     color: "blue",
                     title: "及格门数",
                     "main-content": (_k = vue.unref(detailedGrade)) == null ? void 0 : _k.filter((item) => (item.semester === semesterValue.value || semesterValue.value === "all") && Number(item.grade) > 60).length,
                     "sub-content": " / " + ((_l = vue.unref(detailedGrade)) == null ? void 0 : _l.filter((item) => item.semester === semesterValue.value || semesterValue.value === "all").length) || ""
                   }, null, 8, ["main-content", "sub-content"])) : vue.createCommentVNode("", true),
-                  tabValue.value === "学分" ? (vue.openBlock(), vue.createBlock(_sfc_main$1, {
+                  tabValue.value === "学分" ? (vue.openBlock(), vue.createBlock(_sfc_main$2, {
                     key: 6,
                     color: "purple",
                     title: "必修通过学分",
                     "main-content": (_m = vue.unref(detailedGrade)) == null ? void 0 : _m.filter((item) => (item.semester === semesterValue.value || semesterValue.value === "all") && item.isRequired && item.grade > 60).reduce((acc, cur) => acc + Number(cur.credit), 0),
                     "sub-content": " / " + ((_n = vue.unref(detailedGrade)) == null ? void 0 : _n.filter((item) => (item.semester === semesterValue.value || semesterValue.value === "all") && item.isRequired).reduce((acc, cur) => acc + Number(cur.credit), 0)) || ""
                   }, null, 8, ["main-content", "sub-content"])) : vue.createCommentVNode("", true),
-                  tabValue.value === "学分" ? (vue.openBlock(), vue.createBlock(_sfc_main$1, {
+                  tabValue.value === "学分" ? (vue.openBlock(), vue.createBlock(_sfc_main$2, {
                     key: 7,
                     color: "purple",
                     title: "选修通过学分",
@@ -33741,7 +33702,7 @@
                     _: 1
                   })
                 ]),
-                vue.createElementVNode("div", _hoisted_4, [
+                vue.createElementVNode("div", _hoisted_4$1, [
                   vue.createVNode(_component_DataTable, {
                     paginator: true,
                     rows: 10,
@@ -33783,13 +33744,312 @@
       };
     }
   };
+  function unrefElement(elRef) {
+    var _a;
+    const plain = toValue$1(elRef);
+    return (_a = plain == null ? void 0 : plain.$el) != null ? _a : plain;
+  }
+  const defaultWindow = isClient$1 ? window : void 0;
+  const defaultNavigator = isClient$1 ? window.navigator : void 0;
+  function useEventListener(...args) {
+    let target;
+    let events2;
+    let listeners;
+    let options2;
+    if (typeof args[0] === "string" || Array.isArray(args[0])) {
+      [events2, listeners, options2] = args;
+      target = defaultWindow;
+    } else {
+      [target, events2, listeners, options2] = args;
+    }
+    if (!target)
+      return noop;
+    if (!Array.isArray(events2))
+      events2 = [events2];
+    if (!Array.isArray(listeners))
+      listeners = [listeners];
+    const cleanups = [];
+    const cleanup = () => {
+      cleanups.forEach((fn) => fn());
+      cleanups.length = 0;
+    };
+    const register2 = (el, event2, listener, options22) => {
+      el.addEventListener(event2, listener, options22);
+      return () => el.removeEventListener(event2, listener, options22);
+    };
+    const stopWatch = vue.watch(
+      () => [unrefElement(target), toValue$1(options2)],
+      ([el, options22]) => {
+        cleanup();
+        if (!el)
+          return;
+        const optionsClone = isObject$1(options22) ? { ...options22 } : options22;
+        cleanups.push(
+          ...events2.flatMap((event2) => {
+            return listeners.map((listener) => register2(el, event2, listener, optionsClone));
+          })
+        );
+      },
+      { immediate: true, flush: "post" }
+    );
+    const stop = () => {
+      stopWatch();
+      cleanup();
+    };
+    tryOnScopeDispose(stop);
+    return stop;
+  }
+  function useMounted() {
+    const isMounted = vue.ref(false);
+    const instance = vue.getCurrentInstance();
+    if (instance) {
+      vue.onMounted(() => {
+        isMounted.value = true;
+      }, instance);
+    }
+    return isMounted;
+  }
+  function useSupported(callback) {
+    const isMounted = useMounted();
+    return vue.computed(() => {
+      isMounted.value;
+      return Boolean(callback());
+    });
+  }
+  function usePermission(permissionDesc, options2 = {}) {
+    const {
+      controls = false,
+      navigator: navigator2 = defaultNavigator
+    } = options2;
+    const isSupported = useSupported(() => navigator2 && "permissions" in navigator2);
+    let permissionStatus;
+    const desc = typeof permissionDesc === "string" ? { name: permissionDesc } : permissionDesc;
+    const state = vue.ref();
+    const onChange10 = () => {
+      if (permissionStatus)
+        state.value = permissionStatus.state;
+    };
+    const query = createSingletonPromise(async () => {
+      if (!isSupported.value)
+        return;
+      if (!permissionStatus) {
+        try {
+          permissionStatus = await navigator2.permissions.query(desc);
+          useEventListener(permissionStatus, "change", onChange10);
+          onChange10();
+        } catch (e) {
+          state.value = "prompt";
+        }
+      }
+      return permissionStatus;
+    });
+    query();
+    if (controls) {
+      return {
+        state,
+        isSupported,
+        query
+      };
+    } else {
+      return state;
+    }
+  }
+  function useClipboard(options2 = {}) {
+    const {
+      navigator: navigator2 = defaultNavigator,
+      read = false,
+      source,
+      copiedDuring = 1500,
+      legacy = false
+    } = options2;
+    const isClipboardApiSupported = useSupported(() => navigator2 && "clipboard" in navigator2);
+    const permissionRead = usePermission("clipboard-read");
+    const permissionWrite = usePermission("clipboard-write");
+    const isSupported = vue.computed(() => isClipboardApiSupported.value || legacy);
+    const text2 = vue.ref("");
+    const copied = vue.ref(false);
+    const timeout = useTimeoutFn(() => copied.value = false, copiedDuring);
+    function updateText() {
+      if (isClipboardApiSupported.value && isAllowed(permissionRead.value)) {
+        navigator2.clipboard.readText().then((value2) => {
+          text2.value = value2;
+        });
+      } else {
+        text2.value = legacyRead();
+      }
+    }
+    if (isSupported.value && read)
+      useEventListener(["copy", "cut"], updateText);
+    async function copy(value2 = toValue$1(source)) {
+      if (isSupported.value && value2 != null) {
+        if (isClipboardApiSupported.value && isAllowed(permissionWrite.value))
+          await navigator2.clipboard.writeText(value2);
+        else
+          legacyCopy(value2);
+        text2.value = value2;
+        copied.value = true;
+        timeout.start();
+      }
+    }
+    function legacyCopy(value2) {
+      const ta = document.createElement("textarea");
+      ta.value = value2 != null ? value2 : "";
+      ta.style.position = "absolute";
+      ta.style.opacity = "0";
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand("copy");
+      ta.remove();
+    }
+    function legacyRead() {
+      var _a, _b, _c;
+      return (_c = (_b = (_a = document == null ? void 0 : document.getSelection) == null ? void 0 : _a.call(document)) == null ? void 0 : _b.toString()) != null ? _c : "";
+    }
+    function isAllowed(status) {
+      return status === "granted" || status === "prompt";
+    }
+    return {
+      isSupported,
+      text: text2,
+      copied,
+      copy
+    };
+  }
+  const _hoisted_1 = /* @__PURE__ */ vue.createElementVNode("div", { class: "text-left text-base" }, [
+    /* @__PURE__ */ vue.createElementVNode("p", null, [
+      /* @__PURE__ */ vue.createTextVNode(" 当前课表的解析能力依赖 "),
+      /* @__PURE__ */ vue.createElementVNode("a", {
+        href: "https://github.com/qwqVictor/CQUPT-ics",
+        class: "text-white hover:text-green hover:font-bold"
+      }, "CQUPT-ics"),
+      /* @__PURE__ */ vue.createTextVNode(" 。数据源来自 "),
+      /* @__PURE__ */ vue.createElementVNode("a", {
+        href: "https://app.redrock.team/#/",
+        class: "text-white hover:text-green hover:font-bold"
+      }, "掌上重邮"),
+      /* @__PURE__ */ vue.createTextVNode(" 。 ")
+    ])
+  ], -1);
+  const _hoisted_2 = { class: "block sm:flex mt-4 mx-auto" };
+  const _hoisted_3 = /* @__PURE__ */ vue.createElementVNode("svg", {
+    xmlns: "http://www.w3.org/2000/svg",
+    width: "20",
+    height: "20",
+    viewBox: "0 0 24 24"
+  }, [
+    /* @__PURE__ */ vue.createElementVNode("path", {
+      fill: "currentColor",
+      d: "m12 16l-5-5l1.4-1.45l2.6 2.6V4h2v8.15l2.6-2.6L17 11zm-6 4q-.825 0-1.412-.587T4 18v-3h2v3h12v-3h2v3q0 .825-.587 1.413T18 20z"
+    })
+  ], -1);
+  const _hoisted_4 = { class: "px-4 rounded border border-white/50 text-white sm:flex items-center text-base hidden" };
+  const _hoisted_5 = /* @__PURE__ */ vue.createElementVNode("svg", {
+    xmlns: "http://www.w3.org/2000/svg",
+    width: "20",
+    height: "20",
+    viewBox: "0 0 24 24"
+  }, [
+    /* @__PURE__ */ vue.createElementVNode("path", {
+      fill: "currentColor",
+      d: "M9 18q-.825 0-1.412-.587T7 16V4q0-.825.588-1.412T9 2h9q.825 0 1.413.588T20 4v12q0 .825-.587 1.413T18 18zm-4 4q-.825 0-1.412-.587T3 20V6h2v14h11v2z"
+    })
+  ], -1);
+  const _hoisted_6 = /* @__PURE__ */ vue.createElementVNode("div", { class: "text-left text-base mt-4" }, [
+    /* @__PURE__ */ vue.createElementVNode("p", { class: "text-white/50" }, [
+      /* @__PURE__ */ vue.createTextVNode(" 通常Windows可通过以日历应用打开ics文件导入，安卓端日历可在日历设置中找到导入或订阅的选项。Apple平台的导入方式请查看 "),
+      /* @__PURE__ */ vue.createElementVNode("a", {
+        href: "https://github.com/qwqVictor/CQUPT-ics/blob/main/docs/ImportOrSubscribe.md",
+        class: "text-white/50 hover:text-green hover:font-bold"
+      }, "这里"),
+      /* @__PURE__ */ vue.createTextVNode(" 。 ")
+    ])
+  ], -1);
+  const _hoisted_7 = /* @__PURE__ */ vue.createElementVNode("div", { class: "flex gap-4 items-center" }, [
+    /* @__PURE__ */ vue.createElementVNode("div", { class: "text-base" }, [
+      /* @__PURE__ */ vue.createTextVNode("其它适配重邮教务的平台： "),
+      /* @__PURE__ */ vue.createElementVNode("a", {
+        href: "https://i.ai.mi.com/h5/precache/ai-schedule/#/home",
+        class: "hover:text-green hover:font-bold"
+      }, "小爱课程表"),
+      /* @__PURE__ */ vue.createTextVNode("； "),
+      /* @__PURE__ */ vue.createElementVNode("a", {
+        href: "https://www.wakeup.fun/",
+        class: "hover:text-green hover:font-bold"
+      }, "WakeUp课程表")
+    ])
+  ], -1);
+  const _sfc_main = {
+    __name: "TimeTable",
+    setup(__props) {
+      const stuId = vue.ref("");
+      stuId.value = $("#head > div:nth-child(1) > div:nth-child(2)").text().match(/\d{10}/)[0];
+      const fetchURL = vue.computed(() => `https://api.imvictor.tech/cqupt/ical/${stuId.value}.ics?exam=0`);
+      const { copy, copied } = useClipboard({ source: fetchURL, legacy: true });
+      const openURL = () => {
+        window.open(fetchURL.value);
+      };
+      const copyURL = () => {
+        copy(fetchURL.value);
+      };
+      return (_ctx, _cache) => {
+        const _component_Button = vue.resolveComponent("Button");
+        const _component_Divider = vue.resolveComponent("Divider");
+        const _component_Panel = vue.resolveComponent("Panel");
+        return vue.openBlock(), vue.createBlock(_component_Panel, {
+          header: "下载课表",
+          class: "sm:w-3/4 w-full mx-auto p-1 sm:p-4",
+          "pt:header:class": "!text-xl"
+        }, {
+          default: vue.withCtx(() => [
+            _hoisted_1,
+            vue.createElementVNode("div", _hoisted_2, [
+              vue.createVNode(_component_Button, {
+                outlined: "",
+                class: "w-full sm:w-auto",
+                "pt:label:class": "!font-bold",
+                onClick: _cache[0] || (_cache[0] = ($event) => openURL()),
+                label: "下载本学期课表"
+              }, {
+                icon: vue.withCtx(() => [
+                  _hoisted_3
+                ]),
+                _: 1
+              }),
+              vue.createVNode(_component_Divider, {
+                layout: "vertical",
+                class: "hidden sm:block"
+              }),
+              vue.createElementVNode("div", _hoisted_4, vue.toDisplayString(fetchURL.value), 1),
+              vue.createVNode(_component_Button, {
+                class: "ml-0 sm:ml-2 w-full sm:w-auto mt-4 sm:mt-0",
+                onClick: _cache[1] || (_cache[1] = ($event) => copyURL()),
+                outlined: "",
+                label: vue.unref(copied) ? "复制成功！" : "复制URL订阅",
+                "pt:label:class": "!font-bold"
+              }, {
+                icon: vue.withCtx(() => [
+                  _hoisted_5
+                ]),
+                _: 1
+              }, 8, ["label"])
+            ]),
+            _hoisted_6,
+            vue.createVNode(_component_Divider, { class: "my-8" }),
+            _hoisted_7
+          ]),
+          _: 1
+        });
+      };
+    }
+  };
   const routes = [
-    { path: "/fileShowContent.php", component: _sfc_main$4 },
-    { path: "/student/ksap.php", component: _sfc_main$3 },
-    { path: "/", component: _sfc_main$5 },
-    { path: "/index.php", component: _sfc_main$5 },
-    { path: "/rump_frontend/access_forbidden/", component: _sfc_main$2 },
-    { path: "/student/chengjiPm.php", component: _sfc_main }
+    { path: "/fileShowContent.php", component: _sfc_main$5 },
+    { path: "/student/ksap.php", component: _sfc_main$4 },
+    { path: "/", component: _sfc_main$6 },
+    { path: "/index.php", component: _sfc_main$6 },
+    { path: "/rump_frontend/access_forbidden/", component: _sfc_main$3 },
+    { path: "/student/chengjiPm.php", component: _sfc_main$1 },
+    { path: "/user.php", component: _sfc_main }
   ];
   const router = createRouter({
     history: createMemoryHistory(),
@@ -34271,7 +34531,7 @@
       }
     }
   });
-  const CSS = '*,:before,:after{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}:before,:after{--tw-content: ""}html,:host{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;-o-tab-size:4;tab-size:4;font-family:ui-sans-serif,system-ui,sans-serif,"Apple Color Emoji","Segoe UI Emoji",Segoe UI Symbol,"Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,samp,pre{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,Courier New,monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dl,dd,h1,h2,h3,h4,h5,h6,hr,figure,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}ol,ul,menu{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::-moz-placeholder,textarea::-moz-placeholder{opacity:1;color:#9ca3af}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}button,[role=button]{cursor:pointer}:disabled{cursor:default}img,svg,video,canvas,audio,iframe,embed,object{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]{display:none}*,:before,:after{--tw-border-spacing-x: 0;--tw-border-spacing-y: 0;--tw-translate-x: 0;--tw-translate-y: 0;--tw-rotate: 0;--tw-skew-x: 0;--tw-skew-y: 0;--tw-scale-x: 1;--tw-scale-y: 1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness: proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width: 0px;--tw-ring-offset-color: #fff;--tw-ring-color: rgb(59 130 246 / .5);--tw-ring-offset-shadow: 0 0 #0000;--tw-ring-shadow: 0 0 #0000;--tw-shadow: 0 0 #0000;--tw-shadow-colored: 0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x: 0;--tw-border-spacing-y: 0;--tw-translate-x: 0;--tw-translate-y: 0;--tw-rotate: 0;--tw-skew-x: 0;--tw-skew-y: 0;--tw-scale-x: 1;--tw-scale-y: 1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness: proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width: 0px;--tw-ring-offset-color: #fff;--tw-ring-color: rgb(59 130 246 / .5);--tw-ring-offset-shadow: 0 0 #0000;--tw-ring-shadow: 0 0 #0000;--tw-shadow: 0 0 #0000;--tw-shadow-colored: 0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }.visible{visibility:visible}.fixed{position:fixed}.relative{position:relative}.left-0{left:0}.right-0{right:0}.top-0{top:0}.m-4{margin:1rem}.mx-auto{margin-left:auto;margin-right:auto}.mb-4{margin-bottom:1rem}.ml-0{margin-left:0}.mt-4{margin-top:1rem}.mt-8{margin-top:2rem}.block{display:block}.inline{display:inline}.flex{display:flex}.hidden{display:none}.w-2\\/3{width:66.666667%}.w-3\\/4{width:75%}.w-full{width:100%}.flex-auto{flex:1 1 auto}.flex-none{flex:none}.flex-col{flex-direction:column}.justify-between{justify-content:space-between}.gap-2{gap:.5rem}.gap-4{gap:1rem}.rounded{border-radius:.25rem}.border{border-width:1px}.border-gray-500{--tw-border-opacity: 1;border-color:rgb(107 114 128 / var(--tw-border-opacity))}.\\!bg-white{--tw-bg-opacity: 1 !important;background-color:rgb(255 255 255 / var(--tw-bg-opacity))!important}.\\!bg-opacity-5{--tw-bg-opacity: .05 !important}.\\!p-0{padding:0!important}.p-1{padding:.25rem}.text-left{text-align:left}.text-center{text-align:center}.text-2xl{font-size:1.5rem;line-height:2rem}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-sm{font-size:.875rem;line-height:1.25rem}.font-bold{font-weight:700}.\\!leading-normal{line-height:1.5!important}.text-blue{--tw-text-opacity: 1;color:rgb(14 165 233 / var(--tw-text-opacity))}.text-green{--tw-text-opacity: 1;color:rgb(52 211 153 / var(--tw-text-opacity))}.text-purple{--tw-text-opacity: 1;color:rgb(212 170 251 / var(--tw-text-opacity))}.text-opacity-80{--tw-text-opacity: .8}.opacity-20{opacity:.2}.shadow-2xl{--tw-shadow: 0 25px 50px -12px rgb(0 0 0 / .25);--tw-shadow-colored: 0 25px 50px -12px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000),var(--tw-ring-shadow, 0 0 #0000),var(--tw-shadow)}.filter{filter:var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow)}.transition{transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,-webkit-backdrop-filter;transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,backdrop-filter;transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,backdrop-filter,-webkit-backdrop-filter;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:.15s}:root{font-family:Inter,Avenir,Helvetica,Arial,sans-serif;font-size:16px;line-height:24px;font-weight:400;color-scheme:light dark;color:#ffffffde;background-color:#242424;font-synthesis:none;text-rendering:optimizeLegibility;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;-webkit-text-size-adjust:100%}body{margin:0;display:flex;place-items:center;min-width:320px;min-height:100vh;background:#000!important}#app{width:100%;margin:0 auto;padding:2rem;text-align:center}.hover\\:opacity-100:hover{opacity:1}@media (min-width: 640px){.sm\\:m-8{margin:2rem}.sm\\:ml-4{margin-left:1rem}.sm\\:mt-0{margin-top:0}.sm\\:block{display:block}.sm\\:flex{display:flex}.sm\\:hidden{display:none}.sm\\:w-1\\/2{width:50%}.sm\\:w-1\\/3{width:33.333333%}.sm\\:w-2\\/3{width:66.666667%}.sm\\:w-3\\/4{width:75%}.sm\\:w-48{width:12rem}.sm\\:w-auto{width:auto}.sm\\:p-4{padding:1rem}.sm\\:text-2xl{font-size:1.5rem;line-height:2rem}.sm\\:text-lg{font-size:1.125rem;line-height:1.75rem}.sm\\:text-sm{font-size:.875rem;line-height:1.25rem}}';
+  const CSS = '*,:before,:after{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}:before,:after{--tw-content: ""}html,:host{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;-o-tab-size:4;tab-size:4;font-family:ui-sans-serif,system-ui,sans-serif,"Apple Color Emoji","Segoe UI Emoji",Segoe UI Symbol,"Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,samp,pre{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,Courier New,monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dl,dd,h1,h2,h3,h4,h5,h6,hr,figure,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}ol,ul,menu{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::-moz-placeholder,textarea::-moz-placeholder{opacity:1;color:#9ca3af}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}button,[role=button]{cursor:pointer}:disabled{cursor:default}img,svg,video,canvas,audio,iframe,embed,object{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]{display:none}*,:before,:after{--tw-border-spacing-x: 0;--tw-border-spacing-y: 0;--tw-translate-x: 0;--tw-translate-y: 0;--tw-rotate: 0;--tw-skew-x: 0;--tw-skew-y: 0;--tw-scale-x: 1;--tw-scale-y: 1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness: proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width: 0px;--tw-ring-offset-color: #fff;--tw-ring-color: rgb(59 130 246 / .5);--tw-ring-offset-shadow: 0 0 #0000;--tw-ring-shadow: 0 0 #0000;--tw-shadow: 0 0 #0000;--tw-shadow-colored: 0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x: 0;--tw-border-spacing-y: 0;--tw-translate-x: 0;--tw-translate-y: 0;--tw-rotate: 0;--tw-skew-x: 0;--tw-skew-y: 0;--tw-scale-x: 1;--tw-scale-y: 1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness: proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width: 0px;--tw-ring-offset-color: #fff;--tw-ring-color: rgb(59 130 246 / .5);--tw-ring-offset-shadow: 0 0 #0000;--tw-ring-shadow: 0 0 #0000;--tw-shadow: 0 0 #0000;--tw-shadow-colored: 0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }.visible{visibility:visible}.fixed{position:fixed}.relative{position:relative}.left-0{left:0}.right-0{right:0}.top-0{top:0}.m-4{margin:1rem}.mx-auto{margin-left:auto;margin-right:auto}.my-8{margin-top:2rem;margin-bottom:2rem}.mb-4{margin-bottom:1rem}.ml-0{margin-left:0}.mt-4{margin-top:1rem}.mt-8{margin-top:2rem}.block{display:block}.inline{display:inline}.flex{display:flex}.hidden{display:none}.w-2\\/3{width:66.666667%}.w-3\\/4{width:75%}.w-full{width:100%}.flex-auto{flex:1 1 auto}.flex-none{flex:none}.flex-col{flex-direction:column}.items-center{align-items:center}.justify-between{justify-content:space-between}.gap-2{gap:.5rem}.gap-4{gap:1rem}.rounded{border-radius:.25rem}.border{border-width:1px}.border-gray-500{--tw-border-opacity: 1;border-color:rgb(107 114 128 / var(--tw-border-opacity))}.border-white\\/50{border-color:#ffffff80}.\\!bg-white{--tw-bg-opacity: 1 !important;background-color:rgb(255 255 255 / var(--tw-bg-opacity))!important}.\\!bg-opacity-5{--tw-bg-opacity: .05 !important}.\\!p-0{padding:0!important}.p-1{padding:.25rem}.px-4{padding-left:1rem;padding-right:1rem}.text-left{text-align:left}.text-center{text-align:center}.\\!text-xl{font-size:1.25rem!important;line-height:1.75rem!important}.text-2xl{font-size:1.5rem;line-height:2rem}.text-base{font-size:1rem;line-height:1.5rem}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-sm{font-size:.875rem;line-height:1.25rem}.\\!font-bold{font-weight:700!important}.font-bold{font-weight:700}.\\!leading-normal{line-height:1.5!important}.text-blue{--tw-text-opacity: 1;color:rgb(14 165 233 / var(--tw-text-opacity))}.text-green{--tw-text-opacity: 1;color:rgb(52 211 153 / var(--tw-text-opacity))}.text-purple{--tw-text-opacity: 1;color:rgb(212 170 251 / var(--tw-text-opacity))}.text-white{--tw-text-opacity: 1;color:rgb(255 255 255 / var(--tw-text-opacity))}.text-white\\/50{color:#ffffff80}.text-opacity-80{--tw-text-opacity: .8}.opacity-20{opacity:.2}.shadow-2xl{--tw-shadow: 0 25px 50px -12px rgb(0 0 0 / .25);--tw-shadow-colored: 0 25px 50px -12px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000),var(--tw-ring-shadow, 0 0 #0000),var(--tw-shadow)}.filter{filter:var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow)}.transition{transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,-webkit-backdrop-filter;transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,backdrop-filter;transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,backdrop-filter,-webkit-backdrop-filter;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:.15s}:root{font-family:Inter,Avenir,Helvetica,Arial,sans-serif;font-size:16px;line-height:24px;font-weight:400;color-scheme:light dark;color:#ffffffde;background-color:#242424;font-synthesis:none;text-rendering:optimizeLegibility;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;-webkit-text-size-adjust:100%}body{margin:0;display:flex;place-items:center;min-width:320px;min-height:100vh;background:#000!important}#app{width:100%;margin:0 auto;padding:2rem;text-align:center}.hover\\:font-bold:hover{font-weight:700}.hover\\:text-green:hover{--tw-text-opacity: 1;color:rgb(52 211 153 / var(--tw-text-opacity))}.hover\\:opacity-100:hover{opacity:1}@media (min-width: 640px){.sm\\:m-8{margin:2rem}.sm\\:ml-2{margin-left:.5rem}.sm\\:ml-4{margin-left:1rem}.sm\\:mt-0{margin-top:0}.sm\\:block{display:block}.sm\\:flex{display:flex}.sm\\:hidden{display:none}.sm\\:w-1\\/2{width:50%}.sm\\:w-1\\/3{width:33.333333%}.sm\\:w-2\\/3{width:66.666667%}.sm\\:w-3\\/4{width:75%}.sm\\:w-48{width:12rem}.sm\\:w-auto{width:auto}.sm\\:p-4{padding:1rem}.sm\\:text-2xl{font-size:1.5rem;line-height:2rem}.sm\\:text-base{font-size:1rem;line-height:1.5rem}.sm\\:text-lg{font-size:1.125rem;line-height:1.75rem}.sm\\:text-sm{font-size:.875rem;line-height:1.25rem}}';
   const regexList = [
     /\/student\/chengji\.php/,
     // 成绩详情

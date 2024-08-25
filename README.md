@@ -19,10 +19,12 @@
 - 🌙 暗黑模式：基于PrimeVue的样式模式，日间/夜间模式随浏览器设置随心改变。
 - 🌐 全面重构：不同于其它简单的CSS注入，隐藏了原版的整个页面并从零搭建。
 - 🐒 油猴脚本：不同于我校另外两个出色的项目（掌上重邮、We重邮），插件完全静态地基于网页的解析，不用担心服务器宕机和隐私泄露。
+- 📅 课表导入：引入[CQUPT-ics](https://github.com/qwqVictor/CQUPT-ics)项目的API，一键将课表下载到本地日历。
 
 ## 页面预览
-![img_1.png](img_1.png)
-![img.png](img.png)
+![img_1.png](screenshots/img_1.png)
+![img.png](screenshots/img.png)
+![img_2.png](screenshots/img_2.png)
 
 ## 如何使用
 
@@ -41,7 +43,6 @@
 
 ## 未来更新内容
 
-- 📅 课程表解析（基于开源项目CQUPT-ics）
 - 📄 成绩详情页面
 - 🔗 添加自己的链接
 
