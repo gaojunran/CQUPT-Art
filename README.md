@@ -31,13 +31,13 @@
 
 ### 电脑端
 
-使用Chrome、Firefox等常见浏览器下载插件「[TamperMonkey](https://www.tampermonkey.net/)」，导入本仓库中`release`文件夹下的UserScript脚本。
+使用Chrome、Firefox等常见浏览器下载插件「[TamperMonkey](https://www.tampermonkey.net/)」，导入[release](https://github.com/gaojunran/CQUPT-Art/releases/tag/UserScript)的UserScript脚本。
 
 访问[jwzx.cqupt.edu.cn]()，即可开始使用。
 
 ### 手机端
 
-建议使用[Via浏览器](https://viayoo.com/zh-cn/)，更轻便易用。在设置 - 脚本处导入本仓库中`release`文件夹下的UserScript脚本即可。
+建议使用[Via浏览器](https://viayoo.com/zh-cn/)，更轻便易用。在设置 - 脚本处导入[release](https://github.com/gaojunran/CQUPT-Art/releases/tag/UserScript)的UserScript脚本即可。
 
 您也可使用手机版的Firefox浏览器安装油猴插件，方法与电脑端类似。访问[jwzx.cqupt.edu.cn]()，即可开始使用。
 
