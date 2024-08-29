@@ -18,6 +18,7 @@ export default defineConfig({
         connect: ['cqupt.edu.cn'],
         name: 'CQUPT-Art',
         description: '重邮学子的极简「教务在线」',
+        'run-at': 'document-end'
       },
       build: {
         externalGlobals: {

@@ -8,6 +8,7 @@
 
 技术架构和部分代码参考了同类项目[PKU-Art](https://github.com/zhuozhiyongde/PKU-Art)，在此表示感谢。
 
+- [jQuery](https://jquery.com/)：抓取DOM元素的常用库。
 - [vite-plugin-monkey](https://github.com/lisonge/vite-plugin-monkey)：基于Vite的插件，可将Vue等主流框架代码编译成UserScript。
 - [Vue3](https://cn.vuejs.org/)：现代前端框架。
 - [TailwindCSS](https://tailwindcss.com/)：原子类CSS框架。

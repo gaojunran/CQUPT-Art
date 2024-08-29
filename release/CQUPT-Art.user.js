@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         CQUPT-Art
 // @namespace    gaojunran/CQUPT-Art
-// @version      0.9.2
+// @version      0.9.3
 // @author       GaoJunRan
 // @description  重邮学子的极简「教务在线」
 // @license      GPL-3.0 license
@@ -10,6 +10,7 @@
 // @match        http://jwzx.cqupt.edu.cn/*
 // @require      https://cdn.jsdelivr.net/npm/vue@3.4.38/dist/vue.global.prod.js
 // @connect      cqupt.edu.cn
+// @run-at       document-end
 // ==/UserScript==
 
 (async function (vue) {
@@ -33996,7 +33997,7 @@
         const _component_Divider = vue.resolveComponent("Divider");
         const _component_Panel = vue.resolveComponent("Panel");
         return vue.openBlock(), vue.createBlock(_component_Panel, {
-          header: "下载课表",
+          header: "下载/导入课表",
           class: "sm:w-3/4 w-full mx-auto p-1 sm:p-4",
           "pt:header:class": "!text-xl"
         }, {

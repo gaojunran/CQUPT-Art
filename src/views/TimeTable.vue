@@ -20,7 +20,7 @@ const copyURL = () => {
 </script>
 
 <template>
-  <Panel header="下载课表"
+  <Panel header="下载/导入课表"
          class="sm:w-3/4 w-full mx-auto p-1 sm:p-4"
          pt:header:class="!text-xl"
   >
