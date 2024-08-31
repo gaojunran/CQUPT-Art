@@ -18,12 +18,21 @@ const colorClassName = colorClassNameMapping[props.color]
 </script>
 
 <template>
-  <Card class="flex-none" :pt:root:class="['border border-gray-500 !bg-white !bg-opacity-5']">
+  <Panel pt:header:class="!pt-0" class="block sm:hidden">
+    <div class="flex justify-between">
+      <div class="text-opacity-80 text-sm sm:text-base" :class="[colorClassName]">{{ props.title }}</div>
+      <div class=" block sm:hidden" :class="[colorClassName]">{{mainContent}} {{subContent}}</div>
+    </div>
+  </Panel>
+  <Card class="flex-none hidden sm:block" pt:root:class="border border-white dark:border-black !bg-white !bg-opacity-5 hover:!border-black dark:hover:!border-white transition">
     <template #title>
-      <div class="text-left text-opacity-80 " :class="[colorClassName]">{{ props.title }}</div>
+      <div class="flex justify-between">
+        <div class="text-opacity-80 text-sm sm:text-base" :class="[colorClassName]">{{ props.title }}</div>
+        <div class=" block sm:hidden" :class="[colorClassName]">{{mainContent}} {{subContent}}</div>
+      </div>
     </template>
     <template #content>
-      <div class="text-left">
+      <div class="text-left ">
         <span class="text-2xl font-bold shadow-2xl" :class="[colorClassName]">
           {{ mainContent }}
         </span>

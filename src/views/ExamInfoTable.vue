@@ -30,7 +30,7 @@ data.shift();
 
 <template>
   <Panel header="考试安排" pt:header:class="!text-xl"
-      class="sm:w-3/4 w-full mx-auto p-1 sm:p-4">
+      class="sm:w-3/4 w-full mx-auto p-1 sm:p-4 mt-16">
     <DataTable :value="data"  class="text-sm sm:text-base">
       <Column field="courseName" header="课程名称"></Column>
       <Column field="dateTime" header="日期时间"></Column>

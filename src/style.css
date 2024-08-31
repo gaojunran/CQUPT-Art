@@ -24,7 +24,13 @@ body {
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
-  background: black !important;
+  background-color: white !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: #242424 !important;
+  }
 }
 
 #app {
@@ -33,3 +39,4 @@ body {
   padding: 2rem;
   text-align: center;
 }
+

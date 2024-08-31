@@ -66,7 +66,7 @@ const jumpTo = (url) => {
 </script>
 
 <template>
-  <Panel class="sm:w-3/4 w-full mx-auto p-1 sm:p-4">
+  <Panel class="sm:w-3/4 w-full mx-auto p-1 sm:p-4 mt-16">
     <div class="sm:flex block justify-between">
       <SelectButton class="w-3/4 sm:w-auto "
                     v-model="tabValue" :options="['绩点', '成绩', '学分']"

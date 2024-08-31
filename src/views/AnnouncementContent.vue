@@ -38,7 +38,7 @@ getAll();
 
 
 <template>
-  <Panel class="w-full sm:w-2/3 mx-auto">
+  <Panel class="w-full sm:w-2/3 mx-auto mt-16">
     <div class="text-lg sm:text-2xl font-bold mb-4">{{ title }}</div>
     <div v-for="paragraph in content" :key="paragraph" class="text-left text-sm sm:text-lg mb-4">
       {{ paragraph }}

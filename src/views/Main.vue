@@ -3,9 +3,11 @@ import {onMounted, ref} from "vue";
 import $ from "jquery";
 import Annoucements from "../components/Annoucements.vue";
 import Calender from "../components/Calender.vue";
+import Settings from "../components/Settings.vue";
 
 const isAnnouncementOverlay = ref(false);
 const isCalendarOverlay = ref(false);
+
 let announcementData = ref([]);
 let dateData = ref("");
 
@@ -41,7 +43,6 @@ const parseAnnouncement = () => {
       url: $link.attr('href')
     };
   }).get();
-  // console.log("results:", announcementData.value);
 }
 
 const parseLoginStatus = () => {
@@ -78,21 +79,25 @@ onMounted(() => {
 </script>
 
 <template>
-  <Panel class="w-2/3 sm:w-1/2 mx-auto" v-if="!isLogin">
+  <Panel class="w-4/5 sm:w-1/2 mx-auto" pt:root:class="hover:border-black dark:hover:border-white transition" v-if="!isLogin">
     <div class="text-center font-bold mb-4 text-sm">您还未登录，请点击下方按钮完成登录。</div>
     <Button class="font-bold" outlined @click="jumpTo('/tysfrz/index.php')">登 录</Button>
   </Panel>
 
-  <Panel :header="dateData" class="w-2/3 sm:w-1/2 mx-auto" v-if="isLogin"
+  <Annoucements v-model:visible="isAnnouncementOverlay" :data="announcementData"></Annoucements>
+  <Calender v-model:visible="isCalendarOverlay"></Calender>
+
+  <Panel :header="dateData" class="w-4/5 sm:w-1/2 mx-auto hover:border-black dark:hover:border-white transition mt-16 sm:mt-0" v-if="isLogin"
          pt:content:class="!p-0" pt:title:class="!leading-normal"></Panel>
 
-  <Panel header="快捷服务" class="w-2/3 sm:w-1/2 mx-auto mt-4" v-if="isLogin">
+  <Panel header="快捷服务" class="w-4/5 sm:w-1/2 mx-auto mt-4 hover:border-black dark:hover:border-white transition" v-if="isLogin">
     <ButtonGroup class="hidden sm:block">
       <Button class="font-bold" outlined @click="jumpTo('/user.php')">下载/订阅课表</Button>
       <Button class="font-bold" outlined @click="jumpTo('/student/chengjiPm.php')">成绩查询</Button>
       <Button class="font-bold" outlined @click="jumpTo('/student/ksap.php')">考试安排</Button>
       <Button class="font-bold" outlined @click="jumpTo('/xk.php')">选课中心</Button>
       <Button class="font-bold" outlined @click="jumpTo('/jxpj/index.php')">学 评 教</Button>
+      <Button class="font-bold" outlined @click="jumpTo('https://jzsf.cqupt.edu.cn/bin/student/index_stu.jsp')">集中收费</Button>
     </ButtonGroup>
 
     <div class="flex flex-col sm:hidden gap-2">
@@ -102,19 +107,19 @@ onMounted(() => {
       <Button class="font-bold block w-full text-sm" outlined @click="jumpTo('/student/ksap.php')">考试安排</Button>
       <Button class="font-bold block w-full text-sm" outlined @click="jumpTo('/xk.php')">选课中心</Button>
       <Button class="font-bold block w-full text-sm" outlined @click="jumpTo('/jxpj/index.php')">学 评 教</Button>
+      <Button class="font-bold block w-full text-sm" outlined @click="jumpTo('https://jzsf.cqupt.edu.cn/bin/student/index_stu.jsp')">集中收费</Button>
     </div>
-    <Annoucements v-model:visible="isAnnouncementOverlay" :data="announcementData"></Annoucements>
-    <Calender v-model:visible="isCalendarOverlay"></Calender>
 
   </Panel>
 
-  <Panel header="信息公开" class="w-2/3 sm:w-1/2 mx-auto mt-4" v-if="isLogin">
+  <Panel header="信息公开" class="w-4/5 sm:w-1/2 mx-auto mt-4 hover:border-black dark:hover:border-white transition" v-if="isLogin">
     <ButtonGroup class="hidden sm:block">
       <Button class="font-bold" outlined @click="isAnnouncementOverlay = true" label="Info" severity="info">教务动态
       </Button>
       <Button class="font-bold" outlined @click="jumpTo('https://cc.cqupt.edu.cn')" label="Info" severity="info">
         课程中心
       </Button>
+      <Button class="font-bold" outlined @click="jumpTo('https://lib.cqupt.edu.cn/')" label="Info" severity="info">图 书 馆</Button>
       <Button class="font-bold" outlined @click="jumpTo('/infoNavi.php')" label="Info" severity="info">各类文档</Button>
       <Button class="font-bold" outlined @click="isCalendarOverlay = true" label="Info" severity="info">校 历</Button>
     </ButtonGroup>
@@ -125,6 +130,8 @@ onMounted(() => {
       <Button class="font-bold block w-full text-sm" outlined @click="jumpTo('https://cc.cqupt.edu.cn')" label="Info"
               severity="info">课程中心
       </Button>
+      <Button class="font-bold block w-full text-sm" outlined @click="jumpTo('https://lib.cqupt.edu.cn/')" label="Info"
+              severity="info">图 书 馆</Button>
       <Button class="font-bold block w-full text-sm" outlined @click="jumpTo('/infoNavi.php')" label="Info"
               severity="info">
         各类文档
@@ -135,7 +142,7 @@ onMounted(() => {
     </div>
   </Panel>
 
-  <Panel header="我的链接" class="w-2/3 sm:w-1/2 mx-auto mt-4" v-if="isLogin">
+  <Panel header="我的链接" class="w-4/5 sm:w-1/2 mx-auto mt-4 hover:border-black dark:hover:border-white transition relative" v-if="isLogin">
     <ButtonGroup class="hidden sm:block">
       <Button v-for="(item, index) in linkList" :key="index"
               class="font-bold" outlined

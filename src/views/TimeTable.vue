@@ -21,16 +21,16 @@ const copyURL = () => {
 
 <template>
   <Panel header="下载/导入课表"
-         class="sm:w-3/4 w-full mx-auto p-1 sm:p-4"
+         class="sm:w-4/5 w-full mx-auto p-1 sm:p-4"
          pt:header:class="!text-xl"
   >
     <div class="text-left text-base">
       <p>
         当前课表的解析能力依赖
         <a href="https://github.com/qwqVictor/CQUPT-ics"
-           class="text-white hover:text-green hover:font-bold">CQUPT-ics</a>
+           class="hover:text-green hover:font-bold">CQUPT-ics</a>
         。数据源来自
-        <a href="https://app.redrock.team/#/" class="text-white hover:text-green hover:font-bold">掌上重邮</a>
+        <a href="https://app.redrock.team/#/" class="hover:text-green hover:font-bold">掌上重邮</a>
         。
       </p>
     </div>
@@ -47,7 +47,7 @@ const copyURL = () => {
 
       <Divider layout="vertical" class="hidden sm:block"></Divider>
 
-      <div class="px-4 rounded border border-white/50 text-white sm:flex items-center text-base hidden ">{{
+      <div class="px-4 rounded border border-black/50 dark:border-white/50 text-black dark:text-white sm:flex items-center text-base hidden ">{{
           fetchURL
         }}
       </div>
@@ -66,11 +66,14 @@ const copyURL = () => {
     </div>
 
     <div class="text-left text-base mt-4">
-      <p class="text-white/50">
-        通常Windows可通过以日历应用打开ics文件导入，安卓端日历可在日历设置中找到导入或订阅的选项。Apple平台的导入方式请查看
+      <p class="text:black/50 dark:text-white/50">
+        通常Windows端可通过以日历应用打开ics文件的方式导入，安卓端日历可在日历设置中找到导入或订阅的选项。Apple平台的导入方式请查看
         <a href="https://github.com/qwqVictor/CQUPT-ics/blob/main/docs/ImportOrSubscribe.md"
-           class="text-white/50 hover:text-green hover:font-bold">这里</a>
+           class="hover:text-green hover:font-bold">这里</a>
         。
+      </p>
+      <p class="text:black/50 dark:text-white/50">
+        受限于教务在线规则，假期期间导入的是 上学期 的课表，请在开学后再导入。
       </p>
     </div>
 
