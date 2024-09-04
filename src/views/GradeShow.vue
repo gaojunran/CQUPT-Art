@@ -1,60 +1,61 @@
 <script setup>
-import $, {cssNumber} from "jquery";
-import {computed, ref} from "vue";
+import $ from "jquery";
+import {computed, onMounted, ref, watch} from "vue";
 import ShowCard from "../components/ShowCard.vue";
 
 let detailedGrade = ref([]);
-let rankAndGrade = ref([]);
+let totalInfo = ref({});
 
-const $tbodyNode1 = $('#bzyTable > tbody:nth-child(2)');
-$tbodyNode1.find('tr').each(function () {
-  let row = {
-    semester: $(this).find('td:nth-child(2)').text(),
-    courseName: $(this).find('td:nth-child(4)').text(),
-    isRequired: $(this).find('td:nth-child(5)').text() === "必修",
-    credit: $(this).find('td:nth-child(6)').text(),
-    grade: $(this).find('td:nth-child(8)').text(),
-    gradePoint: $(this).find('td:nth-child(9)').text(),
-  }
-  detailedGrade.value.push(row);
-})
-
-$('ui-id-2').trigger("click");
-const $tbodyNode2 = $('#cjAllTab-zypm > table:nth-child(1) > tbody:nth-child(2)')
-let currSemester = '';
-let currData = {}
-$tbodyNode2.find('tr').each((index, tr) => {
-  if (index % 2 === 0) {
-    currSemester = $(tr).find('td:nth-child(1)').text();
-    currData = {
-      gpa: $(tr).find('td:nth-child(3)').text(),
-      gpaRank: $(tr).find('td:nth-child(4)').text(),
+const getDetailedGrade = () => {
+  const $tbodyNode = $('#bzyTable > tbody:nth-child(2)');
+  $tbodyNode.find('tr').each(function () {
+    let row = {
+      semester: $(this).find('td:nth-child(2)').text(),
+      courseName: $(this).find('td:nth-child(4)').text(),
+      isRequired: $(this).find('td:nth-child(5)').text() === "必修",
+      credit: Number($(this).find('td:nth-child(6)').text()),
+      grade: Number($(this).find('td:nth-child(8)').text()),
+      gradePoint: Number($(this).find('td:nth-child(9)').text()),
     }
-  } else {
-    rankAndGrade.value.push({
-      semester: currSemester,
-      gpa: currData.gpa,
-      gpaRank: currData.gpaRank,
-      gradeAverage: $(tr).find('td:nth-child(2)').text(),
-      gradeAverageRank: $(tr).find('td:nth-child(3)').text(),
-    })
+    detailedGrade.value.push(row);
+  })
+}
+const getTotalInfo = () => {
+  let requiredPass = Number($('#AxfTjTable > tbody:nth-child(2) > tr:nth-child(1) > td:nth-child(2)').text());
+  let requiredNotPass = Number($('#AxfTjTable > tbody:nth-child(2) > tr:nth-child(1) > td:nth-child(3)').text());
+  let requiredTotal = requiredPass + requiredNotPass;
+  let optionalPass = Number($('#AxfTjTable > tbody:nth-child(2) > tr:nth-child(2) > td:nth-child(2)').text());
+  let optionalNotPass = Number($('#AxfTjTable > tbody:nth-child(2) > tr:nth-child(2) > td:nth-child(3)').text());
+  let otherPass = Number($('#AxfTjTable > tbody:nth-child(2) > tr:nth-child(3) > td:nth-child(2)').text());
+  let otherNotPass = Number($('#AxfTjTable > tbody:nth-child(2) > tr:nth-child(3) > td:nth-child(3)').text());
+  let notRequiredPass = optionalPass + otherPass;
+  let notRequiredTotal = notRequiredPass + optionalNotPass + otherNotPass;
+  let gpa = Number($('#AxfTjTable > tbody:nth-child(2) > tr:nth-child(4) > td:nth-child(2)').text());
+  let grade = Number($('#AxfTjTable > tbody:nth-child(2) > tr:nth-child(5) > td:nth-child(2)').text());
+  $('ui-id-2').trigger("click");
+  let gpaRank = $('#cjAllTab-zypm > table:nth-child(1) > tbody:nth-child(2) > tr:nth-last-child(2) > td:nth-child(4)').text();
+  let gradeRank = $('#cjAllTab-zypm > table:nth-child(1) > tbody:nth-child(2) > tr:nth-last-child(1) > td:nth-child(3)').text();
+  totalInfo.value = {
+    requiredPass, requiredTotal, notRequiredPass, notRequiredTotal, gpa, grade, gpaRank, gradeRank
+  }
+}
+
+const singleInfo = computed(() => {
+  return {
+    gpa: (detailedGrade.value?.filter(item => item.semester === semesterValue.value)?.reduce((acc, cur) => acc + cur.gradePoint * cur.credit, 0)
+        / (detailedGrade.value?.filter(item => item.semester === semesterValue.value)?.reduce((acc, cur) => acc + cur.credit, 0))).toFixed(2),
+    gradeAverage: (detailedGrade.value?.filter(item => item.semester === semesterValue.value && item.isRequired)?.reduce((acc, cur) => acc + cur.grade * cur.credit, 0)
+        / (detailedGrade.value?.filter(item => item.semester === semesterValue.value && item.isRequired)?.reduce((acc, cur) => acc + cur.credit, 0))).toFixed(2),
   }
 })
-rankAndGrade.value.push({
-  semester: "all",
-  gpa: rankAndGrade.value.reduce((acc, cur) => acc + Number(cur.gpa), 0) / rankAndGrade.value.length,
-  gpaRank: rankAndGrade.value.reduce((acc, cur) => acc + Number(cur.gpaRank), 0) / rankAndGrade.value.length,
-  gradeAverage: rankAndGrade.value.reduce((acc, cur) => acc + Number(cur.gradeAverage), 0) / rankAndGrade.value.length,
-  gradeAverageRank: rankAndGrade.value.reduce((acc, cur) => acc + Number(cur.gradeAverageRank), 0) / rankAndGrade.value.length,
+
+const semesters = computed(() => [...new Set(detailedGrade.value.map(item => item.semester))]);
+const choices = computed(() => {
+  return [
+    ...semesters.value.map(item => ({name: item, code: item})),
+    {name: "全部学期", code: "all"},
+  ]
 })
-// console.log(rankAndGrade)
-
-
-const semesters = [...new Set(detailedGrade.value.map(item => item.semester))];
-const choices = [
-  ...semesters.map(item => ({name: item, code: item})),
-  {name: "全部学期", code: "all"},
-]
 const myChoice = ref({name: "全部学期", code: "all"});
 const semesterValue = computed(() => myChoice.value.code);
 const tabValue = ref("绩点");
@@ -62,15 +63,47 @@ const tabValue = ref("绩点");
 const jumpTo = (url) => {
   window.location.href = url;
 }
+const popover = ref();
+const togglePopover = (event) => {
+  popover.value.toggle(event);
+}
+
+const visible = ref(false);
+
+onMounted(() => {
+  getDetailedGrade();
+  getTotalInfo();
+});
 
 </script>
 
 <template>
   <Panel class="sm:w-3/4 w-full mx-auto p-1 sm:p-4 mt-16">
-    <div class="sm:flex block justify-between">
+    <div class="sm:flex block justify-between items-center">
       <SelectButton class="w-3/4 sm:w-auto "
                     v-model="tabValue" :options="['绩点', '成绩', '学分']"
       ></SelectButton>
+      <div class="font-bold text-2xl hidden sm:block">成绩统计
+        <Popover ref="popover">
+          <div class="">
+            <p>
+              成绩统计方式：
+            </p>
+            <p>
+              - <span class="text-green font-bold">「平均学分绩点」</span>为所有「A类课程」绩点赋以学分权重的加权平均值，不统计绩点为0的课程。
+            </p>
+            <p>
+              - <span class="text-blue font-bold">「必修课加权平均成绩」</span> 为所有「A类必修课」成绩赋以学分权重的加权平均值，不统计成绩为0的课程。
+            </p>
+            <p>
+              - <span class="text-purple font-bold">「学分」</span>为所有「A类课程」的学分；「非必修课」包括选修课、限选课、其他课程。
+            </p>
+            <p>
+              - 「单个学期」的数据依照以上算法计算得来；「全部学期」的数据（包括名次）直接采集自教务在线页面。
+            </p>
+          </div>
+        </Popover>
+      </div>
       <Select class="w-3/4 sm:w-48 text-sm sm:text-lg mt-4 sm:mt-0"
               :options="choices" optionLabel="name"
               v-model="myChoice"
@@ -83,15 +116,15 @@ const jumpTo = (url) => {
         <ShowCard
             v-if="tabValue === '绩点'"
             title="平均学分绩点"
-            :main-content="rankAndGrade?.find(item => item.semester === semesterValue)?.gpa || '暂无数据'"
+            :main-content="(semesterValue === 'all' ? totalInfo.gpa : singleInfo.gpa) || '暂无数据'"
             sub-content=" / 4.0"
             color="green"
         ></ShowCard>
 
         <ShowCard
-            v-if="tabValue === '绩点'"
-            title="专业排名"
-            :main-content="rankAndGrade?.find(item => item.semester === semesterValue)?.gpaRank || '暂无数据'"
+            v-if="tabValue === '绩点' && semesterValue === 'all'"
+            title="绩点名次"
+            :main-content="totalInfo.gpaRank || '暂无数据'"
             color="green"
         ></ShowCard>
 
@@ -103,22 +136,22 @@ const jumpTo = (url) => {
         ></ShowCard>
 
         <ShowCard v-if="tabValue === '成绩'"
-                  title="平均分"
-                  :main-content="rankAndGrade?.find(item => item.semester === semesterValue)?.gradeAverage || '暂无数据'"
+                  title="必修课加权平均成绩"
+                  :main-content="(semesterValue === 'all' ? totalInfo.grade : singleInfo.gradeAverage) || '暂无数据'"
                   sub-content=" / 100.00"
                   color="blue"
         ></ShowCard>
 
-        <ShowCard v-if="tabValue === '成绩'"
-                  title="专业排名"
-                  :main-content="rankAndGrade?.find(item => item.semester === semesterValue)?.gradeAverageRank || '暂无数据'"
+        <ShowCard v-if="tabValue === '成绩' && semesterValue === 'all'"
+                  title="成绩名次"
+                  :main-content="totalInfo.gradeRank || '暂无数据'"
                   color="blue"
         ></ShowCard>
 
         <ShowCard v-if="tabValue === '成绩'"
                   color="blue"
                   :title="'及格门数'"
-                  :main-content="detailedGrade?.filter(item => (item.semester === semesterValue || semesterValue === 'all') && Number(item.grade) > 60).length"
+                  :main-content="detailedGrade?.filter(item => (item.semester === semesterValue || semesterValue === 'all') && item.grade > 60).length"
                   :sub-content="' / ' + detailedGrade?.filter(item => (item.semester === semesterValue || semesterValue === 'all')).length || ''"
         ></ShowCard>
 
@@ -129,29 +162,34 @@ const jumpTo = (url) => {
         ></ShowCard>
 
         <ShowCard v-if="tabValue === '学分'"
-                  color="purple" :title="'选修通过学分'"
+                  color="purple" :title="'非必修通过学分'"
                   :main-content="detailedGrade?.filter(item => (item.semester === semesterValue || semesterValue === 'all') && !item.isRequired && item.grade > 60).reduce((acc, cur) => acc + Number(cur.credit), 0)"
                   :sub-content="' / ' + detailedGrade?.filter(item => (item.semester === semesterValue || semesterValue === 'all')&& !item.isRequired).reduce((acc, cur) => acc + Number(cur.credit), 0) || ''"
         ></ShowCard>
 
-
-        <Button severity="secondary" class="hidden sm:block"
+        <Button severity="secondary" class="block sm:hidden text-sm" @click="visible = true">
+          查看各科成绩
+        </Button>
+        <Button severity="secondary" class="text-sm"
                 @click="jumpTo('/student/chengji.php')"
         >
           查看成绩详情
         </Button>
-        <Button severity="secondary" class="hidden sm:block" @click="jumpTo('/pyfa2020/pyfa2022/index.php')">
+        <Button severity="secondary" class="text-sm" @click="jumpTo('/pyfa2020/pyfa2022/index.php')">
           查看培养方案（2020）
         </Button>
-        <Button severity="secondary" class="hidden sm:block" @click="jumpTo('/pyfa2024/reader.php')">
+        <Button severity="secondary" class="text-sm" @click="jumpTo('/pyfa2024/reader.php')">
           查看培养方案（2024）
         </Button>
+        <div class="text-white/50 text-center sm:text-left" @click="togglePopover">
+          查看统计方式
+        </div>
       </div>
 
-      <div class="w-full sm:w-2/3 mt-4 sm:mt-0 ml-0 sm:ml-4">
+      <div class="w-2/3 mt-0 ml-8 hidden sm:block">
         <DataTable :paginator="true" :rows="10"
                    :value="detailedGrade.filter(item => item.semester === semesterValue || semesterValue === 'all')"
-                   class="text-sm sm:text-sm"
+                   class="text-sm sm:text-sm" sortField="credit" :sortOrder="-1"
         >
           <Column field="courseName" header="课程名称" sortable></Column>
           <Column v-if="tabValue === '绩点'" field="gradePoint" header="绩点" sortable></Column>
@@ -160,8 +198,21 @@ const jumpTo = (url) => {
         </DataTable>
       </div>
     </div>
-
   </Panel>
+
+  <Dialog v-model:visible="visible" modal header="各科成绩" :style="{ width: '50rem' }"
+          :breakpoints="{ '1199px': '75vw', '575px': '90vw' }">
+    <DataTable
+        scrollable scrollHeight="600px" sortField="credit" :sortOrder="-1"
+        :value="detailedGrade.filter(item => item.semester === semesterValue || semesterValue === 'all')"
+        class=""
+    >
+      <Column field="courseName" header="课程名称" sortable></Column>
+      <Column v-if="tabValue === '绩点'" style="min-width: 80px" field="gradePoint" header="绩点" sortable></Column>
+      <Column v-if="tabValue === '成绩'" style="min-width: 80px" field="grade" header="成绩" sortable></Column>
+      <Column field="credit" style="min-width: 80px" header="学分" sortable></Column>
+    </DataTable>
+  </Dialog>
 </template>
 
 <style scoped>

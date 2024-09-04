@@ -55,7 +55,8 @@ const isSettingsOverlay = ref(false);
     <RouterView></RouterView>
   </div>
 
-  <Settings v-model:visible="isSettingsOverlay"></Settings>
+  <Settings v-model:visible="isSettingsOverlay">
+  </Settings>
 
 </template>
 

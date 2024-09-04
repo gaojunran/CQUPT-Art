@@ -18,6 +18,8 @@ import Select from 'primevue/select';
 import SelectButton from "primevue/selectbutton";
 import Message from "primevue/message";
 import Divider from "primevue/divider";
+import Popover from "primevue/popover";
+import InputText from "primevue/inputtext";
 import {router} from "./utils/router.js";
 import Cookies from "universal-cookie";
 import Tooltip from 'primevue/tooltip';
@@ -80,6 +82,8 @@ if (!new Cookies().get("notToStyle") && !isURLMatchesRegex(regexList, window.loc
     app.component('SelectButton', SelectButton);
     app.component('Message', Message);
     app.component('Divider', Divider);
+    app.component('Popover', Popover);
+    app.component('InputText', InputText);
     app.directive('tooltip', Tooltip);
     app.mount(
         (() => {
